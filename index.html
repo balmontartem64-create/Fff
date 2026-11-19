@@ -3,224 +3,256 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NFT Market</title>
+<title>Agram Style</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root {
-  --bg: var(--tg-theme-bg-color, #0a0a0f);
-  --text: var(--tg-theme-text-color, #ffffff);
-  --hint: var(--tg-theme-hint-color, #8b8b9e);
-  --btn: var(--tg-theme-button-color, #7c3aed);
-  --btn-text: var(--tg-theme-button-text-color, #ffffff);
-  --card: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.1);
-  --neon: #a855f7;
-  --neon2: #06b6d4;
-}
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-  min-height: 100vh;
-  background-image: radial-gradient(circle at 20% 0%, rgba(168,85,247,0.15), transparent 50%),
-                    radial-gradient(circle at 80% 100%, rgba(6,182,212,0.15), transparent 50%);
-}
-.header {
-  padding: 20px 16px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  background: linear-gradient(90deg, var(--neon), var(--neon2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.balance {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  backdrop-filter: blur(10px);
-}
-.balance span { color: var(--neon2); }
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0 16px 24px;
-}
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.15s ease;
-}
-.card:active { transform: scale(0.97); }
-.nft-img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  display: block;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-}
-.card-info { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
-.nft-name { font-size: 14px; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.nft-price {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--neon2);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.buy-btn {
-  margin: 0 12px 12px;
-  border: none;
-  border-radius: 12px;
-  padding: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--neon), var(--neon2));
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-}
-.buy-btn:active { opacity: 0.8; }
-.buy-btn:disabled {
-  background: var(--card);
-  color: var(--hint);
-  box-shadow: none;
-  border: 1px solid var(--border);
-}
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(10, 10, 15, 0.85);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  display: flex;
-  justify-content: space-around;
-}
-.nav-item {
-  font-size: 11px;
-  color: var(--hint);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.nav-item.active { color: var(--neon); }
-.nav-icon { font-size: 20px; }
+  :root {
+    --bg: var(--tg-theme-bg-color, #050508);
+    --text: var(--tg-theme-text-color, #ffffff);
+    --hint: var(--tg-theme-hint-color, #8b8b9e);
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --accent: #a855f7;
+    --accent2: #06b6d4;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: env(safe-area-inset-top) 0 calc(80px + env(safe-area-inset-bottom));
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15), transparent 40%);
+    overflow-x: hidden;
+  }
+  .screen {
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  h1, h2, h3 { margin-top: 0; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+  .glass-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  .btn {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-bottom: 10px;
+    transition: opacity 0.2s;
+  }
+  .btn:active { opacity: 0.7; }
+  .btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+  }
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: rgba(5, 5, 8, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--hint);
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-icon { font-size: 22px; }
+  input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text);
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+  input:focus { border-color: var(--accent); }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    transition: width 0.3s ease;
+  }
 </style>
 </head>
 <body>
+<div id="screen-profile" class="screen active">
   <div class="header">
-    <h1>NFT Market</h1>
-    <div class="balance">
-      <span>◆</span> <span id="balanceVal">2.50 ETH</span>
+    <h2 style="margin: 0;">Мой профиль</h2>
+    <div class="avatar"></div>
+  </div>
+  <div class="glass-card">
+    <h3 id="userName">Загрузка...</h3>
+    <p style="color: var(--hint); font-size: 14px;" id="userTag">@username</p>
+    <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+      <div><div style="font-size: 12px; color: var(--hint);">ID</div><div id="userId" style="font-weight: 600;">0</div></div>
+      <div><div style="font-size: 12px; color: var(--hint);">Premium</div><div id="userPrem" style="font-weight: 600;">Нет</div></div>
+      <div><div style="font-size: 12px; color: var(--hint);">Тариф</div><div id="userSub" style="font-weight: 600; color: var(--accent);">FREE</div></div>
     </div>
   </div>
-
-  <div class="grid" id="nftGrid"></div>
-
-  <div class="bottom-nav">
-    <div class="nav-item active"><div class="nav-icon">◈</div>Витрина</div>
-    <div class="nav-item"><div class="nav-icon">◉</div>Мои NFT</div>
-    <div class="nav-item"><div class="nav-icon">◐</div>Профиль</div>
+  <div class="glass-card">
+    <h3>Статистика</h3>
+    <p style="color: var(--hint); font-size: 14px;">Здесь будет ваша активность и данные.</p>
   </div>
-
+</div>
+<div id="screen-shop" class="screen">
+  <div class="header"><h2 style="margin: 0;">Магазин</h2></div>
+  <div class="glass-card" style="border-color: var(--accent);">
+    <h3>💎 Премиум доступ</h3>
+    <p style="color: var(--hint); font-size: 14px;">Полный доступ ко всем функциям навсегда.</p>
+    <div style="font-size: 28px; font-weight: 700; color: var(--accent); margin: 10px 0;">1000 ₽</div>
+    <button class="btn" onclick="buySub('premium')">Купить Премиум</button>
+  </div>
+  <div class="glass-card">
+    <h3>📦 Стандарт</h3>
+    <p style="color: var(--hint); font-size: 14px;">Доступ к расширенной проверке на 30 дней.</p>
+    <div style="font-size: 24px; font-weight: 700; color: var(--accent2); margin: 10px 0;">500 ₽</div>
+    <button class="btn secondary" onclick="buySub('standard')">Купить Стандарт</button>
+  </div>
+</div>
+<div id="screen-dox" class="screen">
+  <div class="header"><h2 style="margin: 0;">Снос аккаунта</h2></div>
+  <div class="glass-card" id="doxInputCard">
+    <p style="color: var(--hint); font-size: 14px; margin-bottom: 15px;">Введите юзернейм для формирования жалобы.</p>
+    <input type="text" id="targetUser" placeholder="@username">
+    <button class="btn" onclick="startDox()" id="startDoxBtn">Начать снос</button>
+  </div>
+  <div class="glass-card" id="doxProgressCard" style="display: none;">
+    <h3 id="doxStatus">Обработка...</h3>
+    <div class="progress-bar"><div class="progress-fill" id="doxProgress"></div></div>
+    <div id="doxPercent" style="text-align: right; font-weight: 600; margin-top: 5px;">0%</div>
+    <div id="doxFiles" style="display: none; margin-top: 15px; font-family: monospace; font-size: 13px; color: #10b981;"></div>
+  </div>
+</div>
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="switchTab('screen-profile', this)">
+    <div class="nav-icon">👤</div>Профиль
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-shop', this)">
+    <div class="nav-icon">🛒</div>Магазин
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-dox', this)">
+    <div class="nav-icon">💀</div>Снос
+  </div>
+</div>
 <script>
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 tg.setHeaderColor('secondary_bg_color');
-tg.BackButton.show();
-tg.BackButton.onClick(() => tg.close());
-
-let balance = 2.50;
-const balanceEl = document.getElementById('balanceVal');
-
-// Синтетические NFT-картинки (градиенты через SVG)
-function makeSVG(c1, c2, emoji) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-    <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
-    </linearGradient></defs>
-    <rect width="200" height="200" fill="url(#g)"/>
-    <text x="100" y="120" font-size="70" text-anchor="middle" fill="rgba(255,255,255,0.9)">${emoji}</text>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+const u = tg.initDataUnsafe?.user || { id: 0, first_name: "Гость", username: "guest", is_premium: false };
+document.getElementById('userName').innerText = u.first_name;
+document.getElementById('userTag').innerText = u.username ? '@' + u.username : 'без юзернейма';
+document.getElementById('userId').innerText = u.id;
+document.getElementById('userPrem').innerText = u.is_premium ? 'Да' : 'Нет';
+let db = JSON.parse(localStorage.getItem('agram_db')) || {};
+if (!db[u.id]) db[u.id] = { sub: 'FREE' };
+document.getElementById('userSub').innerText = db[u.id].sub;
+function switchTab(screenId, navElement) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  navElement.classList.add('active');
+  tg.HapticFeedback.impactOccurred('light');
 }
-
-const nfts = [
-  { id: 1, name: 'Neon Ape', price: 0.15, img: makeSVG('#7c3aed', '#06b6d4', '🐵') },
-  { id: 2, name: 'Cyber Cat', price: 0.08, img: makeSVG('#ec4899', '#f59e0b', '🐱') },
-  { id: 3, name: 'Void Skull', price: 0.22, img: makeSVG('#111827', '#7c3aed', '💀') },
-  { id: 4, name: 'Glitch Eye', price: 0.12, img: makeSVG('#06b6d4', '#10b981', '👁') },
-  { id: 5, name: 'Pixel Crown', price: 0.30, img: makeSVG('#f59e0b', '#ef4444', '👑') },
-  { id: 6, name: 'Quantum Orb', price: 0.18, img: makeSVG('#3b82f6', '#a855f7', '🔮') }
-];
-
-const grid = document.getElementById('nftGrid');
-
-function render() {
-  grid.innerHTML = '';
-  nfts.forEach(nft => {
-    const owned = nft.owned;
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img class="nft-img" src="${nft.img}" alt="${nft.name}">
-      <div class="card-info">
-        <p class="nft-name">${nft.name}</p>
-        <div class="nft-price">${nft.price.toFixed(2)} ETH</div>
-      </div>
-      <button class="buy-btn" ${owned ? 'disabled' : ''} data-id="${nft.id}">
-        ${owned ? 'Куплено ✓' : 'Купить'}
-      </button>
-    `;
-    grid.appendChild(card);
-  });
-
-  grid.querySelectorAll('.buy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = +btn.dataset.id;
-      const nft = nfts.find(n => n.id === id);
-      if (nft.owned || balance < nft.price) {
-        tg.HapticFeedback.notificationOccurred('error');
-        tg.showAlert('Недостаточно средств');
-        return;
-      }
-      balance -= nft.price;
-      nft.owned = true;
-      balanceEl.textContent = balance.toFixed(2) + ' ETH';
+function buySub(type) {
+  const link = type === 'premium' 
+    ? 'https://t.me/durov_stake777?text=Хочу купить Премиум' 
+    : 'https://t.me/durov_stake777?text=Хочу купить Стандарт';
+  tg.openTelegramLink(link);
+  setTimeout(() => {
+    db[u.id].sub = type.toUpperCase();
+    localStorage.setItem('agram_db', JSON.stringify(db));
+    document.getElementById('userSub').innerText = db[u.id].sub;
+    tg.showAlert(`Подписка ${type.toUpperCase()} активирована (Демо)`);
+  }, 1000);
+}
+let isDoxing = false;
+function startDox() {
+  if (isDoxing) return;
+  const target = document.getElementById('targetUser').value.trim();
+  if (!target) { tg.showAlert('Введите юзернейм'); return; }
+  isDoxing = true;
+  document.getElementById('doxInputCard').style.display = 'none';
+  document.getElementById('doxProgressCard').style.display = 'block';
+  const status = document.getElementById('doxStatus');
+  const progress = document.getElementById('doxProgress');
+  const percentText = document.getElementById('doxPercent');
+  const files = document.getElementById('doxFiles');
+  const steps = [
+    { p: 10, t: 'Анализ профиля...' },
+    { p: 15, t: 'Сбор открытых данных...' },
+    { p: 50, t: 'Генерация жалобы...' },
+    { p: 100, t: 'Жалоба отправлена!' }
+  ];
+  let i = 0;
+  function process() {
+    if (i < steps.length) {
+      const s = steps[i];
+      status.innerText = s.t;
+      progress.style.width = s.p + '%';
+      percentText.innerText = s.p + '%';
+      tg.HapticFeedback.impactOccurred('light');
+      i++;
+      setTimeout(process, 1500);
+    } else {
+      status.innerText = '✅ Готово (Демо)';
+      status.style.color = '#10b981';
+      files.innerHTML = '📄 report_101.txt<br>📄 evidence_log.json<br>📁 archive_target.zip';
+      files.style.display = 'block';
+      isDoxing = false;
       tg.HapticFeedback.notificationOccurred('success');
-      tg.showAlert(`Вы купили ${nft.name}!`);
-      render();
-    });
-  });
+    }
+  }
+  process();
 }
-
-render();
 </script>
 </body>
 </html>
