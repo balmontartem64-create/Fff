@@ -3,174 +3,163 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agram Style</title>
+<title>Agram</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: var(--tg-theme-bg-color, #050508);
-    --text: var(--tg-theme-text-color, #ffffff);
-    --hint: var(--tg-theme-hint-color, #8b8b9e);
-    --card-bg: rgba(255, 255, 255, 0.04);
-    --card-border: rgba(255, 255, 255, 0.08);
+    --bg: #050508;
+    --text: #ffffff;
+    --hint: #8b8b9e;
+    --card: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.07);
     --accent: #a855f7;
     --accent2: #06b6d4;
+    --red: #ef4444;
+    --green: #10b981;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: env(safe-area-inset-top) 0 calc(80px + env(safe-area-inset-bottom));
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    padding: env(safe-area-inset-top) 0 calc(100px + env(safe-area-inset-bottom));
     background-image: 
-      radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15), transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15), transparent 40%);
+      radial-gradient(circle at 15% 10%, rgba(168, 85, 247, 0.15), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(6, 182, 212, 0.15), transparent 40%);
     overflow-x: hidden;
   }
-  .screen {
-    display: none;
-    padding: 20px;
-    animation: fadeIn 0.3s ease;
-  }
+  .screen { display: none; padding: 20px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .screen.active { display: block; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  h1, h2, h3 { margin-top: 0; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-  .glass-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    padding: 20px;
-    margin-bottom: 16px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  .header h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+  
+  .top-buttons, .bottom-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
+  .bottom-buttons { margin-top: 20px; }
+  .action-btn {
+    flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 700; border: none; text-align: center;
+    transition: transform 0.1s, opacity 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px;
   }
+  .action-btn:active { transform: scale(0.96); }
+  .btn-red { background: var(--red); color: #fff; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+  .btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+  .btn-blue { background: #3b82f6; color: #fff; }
+  .btn-grey { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid var(--border); }
+
+  .glass-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 20px; margin-bottom: 16px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+  }
+  .glass-card:active { transform: scale(0.98); }
+  
   .btn {
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 600;
-    width: 100%;
-    margin-bottom: 10px;
-    transition: opacity 0.2s;
+    color: #fff; border: none; border-radius: 14px; padding: 16px;
+    font-size: 16px; font-weight: 700; width: 100%; margin-bottom: 12px;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    transition: transform 0.1s, box-shadow 0.1s;
   }
-  .btn:active { opacity: 0.7; }
-  .btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--card-border);
-    color: var(--text);
-  }
+  .btn:active { transform: scale(0.96); box-shadow: 0 2px 5px rgba(168, 85, 247, 0.2); }
+  .btn.secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); box-shadow: none; }
+  
   .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 70px;
-    background: rgba(5, 5, 8, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--card-border);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding-bottom: env(safe-area-inset-bottom);
-    z-index: 100;
+    position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
+    background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+    border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center;
+    padding-bottom: env(safe-area-inset-bottom); z-index: 100;
   }
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    color: var(--hint);
-    transition: color 0.2s;
-  }
-  .nav-item.active { color: var(--accent); }
-  .nav-icon { font-size: 22px; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--hint); transition: 0.3s; }
+  .nav-item.active { color: var(--accent); transform: translateY(-2px); }
+  .nav-icon { font-size: 24px; }
+  
   input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    border: 1px solid var(--card-border);
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text);
-    font-size: 16px;
-    outline: none;
-    margin-bottom: 12px;
+    width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.3); color: var(--text); font-size: 16px; outline: none; margin-bottom: 12px;
+    transition: border-color 0.2s;
   }
-  input:focus { border-color: var(--accent); }
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 10px 0;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    width: 0%;
-    transition: width 0.3s ease;
-  }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+  
+  .progress-bar { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin: 15px 0; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.4s ease; box-shadow: 0 0 10px var(--accent); }
+
+  .legal-text { font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; line-height: 1.4; margin-top: 20px; padding: 0 10px; }
 </style>
 </head>
 <body>
+
 <div id="screen-profile" class="screen active">
   <div class="header">
-    <h2 style="margin: 0;">Мой профиль</h2>
+    <h2>Профиль</h2>
     <div class="avatar"></div>
   </div>
+  
+  <div class="top-buttons">
+    <button class="action-btn btn-green" onclick="switchTab('screen-shop', document.querySelectorAll('.nav-item')[1])">🛒 Магазин</button>
+    <button class="action-btn btn-red" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">🚀 Перейти в приложение</button>
+  </div>
+
   <div class="glass-card">
-    <h3 id="userName">Загрузка...</h3>
-    <p style="color: var(--hint); font-size: 14px;" id="userTag">@username</p>
-    <div style="margin-top: 15px; display: flex; justify-content: space-between;">
-      <div><div style="font-size: 12px; color: var(--hint);">ID</div><div id="userId" style="font-weight: 600;">0</div></div>
-      <div><div style="font-size: 12px; color: var(--hint);">Premium</div><div id="userPrem" style="font-weight: 600;">Нет</div></div>
-      <div><div style="font-size: 12px; color: var(--hint);">Тариф</div><div id="userSub" style="font-weight: 600; color: var(--accent);">FREE</div></div>
+    <h3 style="margin: 0 0 5px 0; font-size: 22px;" id="userName">Загрузка...</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;" id="userTag">@username</p>
+    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">ID</div><div id="userId" style="font-weight: 700;">0</div></div>
+      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">Premium</div><div id="userPrem" style="font-weight: 700;">Нет</div></div>
+      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">Реферал</div><div id="userSub" style="font-weight: 700; color: var(--accent);">FREE</div></div>
     </div>
   </div>
+
   <div class="glass-card">
-    <h3>Статистика</h3>
-    <p style="color: var(--hint); font-size: 14px;">Здесь будет ваша активность и данные.</p>
+    <h3 style="margin: 0 0 10px 0;">Новые функции доступа</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;">Слева активирован VIP-доступ. Откройте вкладку «Магазин», чтобы узнать больше.</p>
+  </div>
+
+  <div class="bottom-buttons">
+    <button class="action-btn btn-blue" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">💬 Поддержка</button>
+    <button class="action-btn btn-grey" onclick="tg.showAlert('Agram Bot v1.0. Разработано для демонстрации.')">ℹ️ О боте</button>
+  </div>
+
+  <div class="legal-text">
+    Отказ от ответственности: Данный бот и мини-приложение предоставляются исключительно в демонстрационных целях. Администрация не несет ответственности за любые действия пользователей, включая переводы средств, и не гарантирует работоспособность сторонних сервисов. Используя бота, вы подтверждаете, что действуете на свой страх и риск и не имеете претензий к разработчикам. Все транзакции проводятся вне бота, администрация не является получателем платежей.
   </div>
 </div>
+
 <div id="screen-shop" class="screen">
-  <div class="header"><h2 style="margin: 0;">Магазин</h2></div>
-  <div class="glass-card" style="border-color: var(--accent);">
-    <h3>💎 Премиум доступ</h3>
-    <p style="color: var(--hint); font-size: 14px;">Полный доступ ко всем функциям навсегда.</p>
-    <div style="font-size: 28px; font-weight: 700; color: var(--accent); margin: 10px 0;">1000 ₽</div>
-    <button class="btn" onclick="buySub('premium')">Купить Премиум</button>
+  <div class="header"><h2>Магазин</h2></div>
+  
+  <div class="glass-card" style="border-color: rgba(168, 85, 247, 0.4);">
+    <h3 style="margin: 0;">💎 VIP-доступ</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 5px 0 15px 0;">Полный доступ ко всем функциям навсегда + личный менеджер.</p>
+    <div style="font-size: 32px; font-weight: 800; color: var(--accent); margin: 10px 0 20px 0; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);">1000 ₽</div>
+    <button class="btn" onclick="buySub('premium')">Купить VIP</button>
   </div>
+  
   <div class="glass-card">
-    <h3>📦 Стандарт</h3>
-    <p style="color: var(--hint); font-size: 14px;">Доступ к расширенной проверке на 30 дней.</p>
-    <div style="font-size: 24px; font-weight: 700; color: var(--accent2); margin: 10px 0;">500 ₽</div>
-    <button class="btn secondary" onclick="buySub('standard')">Купить Стандарт</button>
+    <h3 style="margin: 0;">📦 Реферал</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 5px 0 15px 0;">Доступ к расширенной проверке и партнерской программе на 30 дней.</p>
+    <div style="font-size: 28px; font-weight: 800; color: var(--accent2); margin: 10px 0 20px 0;">500 ₽</div>
+    <button class="btn secondary" onclick="buySub('standard')">Купить Реферал</button>
   </div>
 </div>
+
 <div id="screen-dox" class="screen">
-  <div class="header"><h2 style="margin: 0;">Снос аккаунта</h2></div>
+  <div class="header"><h2>Снос</h2></div>
   <div class="glass-card" id="doxInputCard">
-    <p style="color: var(--hint); font-size: 14px; margin-bottom: 15px;">Введите юзернейм для формирования жалобы.</p>
+    <p style="color: var(--hint); font-size: 14px; margin-bottom: 20px;">Введите юзернейм для формирования жалобы.</p>
     <input type="text" id="targetUser" placeholder="@username">
     <button class="btn" onclick="startDox()" id="startDoxBtn">Начать снос</button>
   </div>
   <div class="glass-card" id="doxProgressCard" style="display: none;">
-    <h3 id="doxStatus">Обработка...</h3>
+    <h3 id="doxStatus" style="margin-bottom: 5px;">Обработка...</h3>
     <div class="progress-bar"><div class="progress-fill" id="doxProgress"></div></div>
-    <div id="doxPercent" style="text-align: right; font-weight: 600; margin-top: 5px;">0%</div>
-    <div id="doxFiles" style="display: none; margin-top: 15px; font-family: monospace; font-size: 13px; color: #10b981;"></div>
+    <div id="doxPercent" style="text-align: right; font-weight: 700; margin-top: 5px; color: var(--accent);">0%</div>
+    <div id="doxFiles" style="display: none; margin-top: 20px; font-family: monospace; font-size: 14px; color: #10b981; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);"></div>
   </div>
 </div>
+
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('screen-profile', this)">
     <div class="nav-icon">👤</div>Профиль
@@ -182,38 +171,42 @@
     <div class="nav-icon">💀</div>Снос
   </div>
 </div>
+
 <script>
 const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-tg.setHeaderColor('secondary_bg_color');
+tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color');
+
 const u = tg.initDataUnsafe?.user || { id: 0, first_name: "Гость", username: "guest", is_premium: false };
 document.getElementById('userName').innerText = u.first_name;
 document.getElementById('userTag').innerText = u.username ? '@' + u.username : 'без юзернейма';
 document.getElementById('userId').innerText = u.id;
 document.getElementById('userPrem').innerText = u.is_premium ? 'Да' : 'Нет';
+
 let db = JSON.parse(localStorage.getItem('agram_db')) || {};
 if (!db[u.id]) db[u.id] = { sub: 'FREE' };
 document.getElementById('userSub').innerText = db[u.id].sub;
+
 function switchTab(screenId, navElement) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(screenId).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  navElement.classList.add('active');
+  if (navElement) navElement.classList.add('active');
   tg.HapticFeedback.impactOccurred('light');
 }
+
 function buySub(type) {
   const link = type === 'premium' 
-    ? 'https://t.me/durov_stake777?text=Хочу купить Премиум' 
-    : 'https://t.me/durov_stake777?text=Хочу купить Стандарт';
+    ? 'https://t.me/durov_stake777?text=Хочу купить VIP' 
+    : 'https://t.me/durov_stake777?text=Хочу купить Реферал';
   tg.openTelegramLink(link);
   setTimeout(() => {
-    db[u.id].sub = type.toUpperCase();
+    db[u.id].sub = type === 'premium' ? 'VIP' : 'REF';
     localStorage.setItem('agram_db', JSON.stringify(db));
     document.getElementById('userSub').innerText = db[u.id].sub;
-    tg.showAlert(`Подписка ${type.toUpperCase()} активирована (Демо)`);
+    tg.showAlert(`Тариф ${type === 'premium' ? 'VIP' : 'Реферал'} активирован (Демо)`);
   }, 1000);
 }
+
 let isDoxing = false;
 function startDox() {
   if (isDoxing) return;
@@ -227,10 +220,8 @@ function startDox() {
   const percentText = document.getElementById('doxPercent');
   const files = document.getElementById('doxFiles');
   const steps = [
-    { p: 10, t: 'Анализ профиля...' },
-    { p: 15, t: 'Сбор открытых данных...' },
-    { p: 50, t: 'Генерация жалобы...' },
-    { p: 100, t: 'Жалоба отправлена!' }
+    { p: 10, t: 'Анализ профиля...' }, { p: 15, t: 'Сбор данных...' },
+    { p: 50, t: 'Генерация жалобы...' }, { p: 100, t: 'Жалоба отправлена!' }
   ];
   let i = 0;
   function process() {
@@ -241,7 +232,7 @@ function startDox() {
       percentText.innerText = s.p + '%';
       tg.HapticFeedback.impactOccurred('light');
       i++;
-      setTimeout(process, 1500);
+      setTimeout(process, 1200);
     } else {
       status.innerText = '✅ Готово (Демо)';
       status.style.color = '#10b981';
