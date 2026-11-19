@@ -3,178 +3,420 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agram</title>
+<title>Aegis</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: #050508;
+    --bg: #0a0a0f;
     --text: #ffffff;
     --hint: #8b8b9e;
-    --card: rgba(255, 255, 255, 0.03);
-    --border: rgba(255, 255, 255, 0.07);
-    --accent: #a855f7;
+    --accent: #7c3aed;
     --accent2: #06b6d4;
-    --red: #ef4444;
-    --green: #10b981;
+    --card: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --gold: #fbbf24;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg); color: var(--text); min-height: 100vh;
-    padding: env(safe-area-inset-top) 0 calc(100px + env(safe-area-inset-bottom));
-    background-image: 
-      radial-gradient(circle at 15% 10%, rgba(168, 85, 247, 0.15), transparent 40%),
-      radial-gradient(circle at 85% 90%, rgba(6, 182, 212, 0.15), transparent 40%);
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
     overflow-x: hidden;
   }
-  .screen { display: none; padding: 20px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .screen.active { display: block; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .header h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
-  
-  .top-buttons, .bottom-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
-  .bottom-buttons { margin-top: 20px; }
-  .action-btn {
-    flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 700; border: none; text-align: center;
-    transition: transform 0.1s, opacity 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px;
+  .top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; background: rgba(10, 10, 15, 0.9);
+    position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
   }
-  .action-btn:active { transform: scale(0.96); }
-  .btn-red { background: var(--red); color: #fff; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
-  .btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-  .btn-blue { background: #3b82f6; color: #fff; }
-  .btn-grey { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid var(--border); }
+  .logo { font-size: 20px; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+  .logo span { color: var(--accent2); }
+  .balance { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; }
+  .balance-star { color: var(--gold); }
+  
+  .carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .carousel::-webkit-scrollbar { display: none; }
+  .banner {
+    min-width: 85%; height: 140px; border-radius: 20px; scroll-snap-align: center;
+    padding: 20px; display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .banner h3 { margin: 0; font-size: 22px; font-weight: 800; z-index: 2; }
+  .banner p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; z-index: 2; }
+  .banner::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .b-1 { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+  .b-2 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+  .b-3 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
 
-  .glass-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 20px; padding: 20px; margin-bottom: 16px;
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s ease;
-  }
-  .glass-card:active { transform: scale(0.98); }
+  .section-title { padding: 15px 20px 10px; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
   
-  .btn {
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    color: #fff; border: none; border-radius: 14px; padding: 16px;
-    font-size: 16px; font-weight: 700; width: 100%; margin-bottom: 12px;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-    transition: transform 0.1s, box-shadow 0.1s;
+  .row-cards { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px; scrollbar-width: none; }
+  .row-cards::-webkit-scrollbar { display: none; }
+  .row-card {
+    min-width: 140px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px;
   }
-  .btn:active { transform: scale(0.96); box-shadow: 0 2px 5px rgba(168, 85, 247, 0.2); }
-  .btn.secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text); box-shadow: none; }
-  
+  .row-card h4 { margin: 0; font-size: 14px; }
+  .row-card .live { color: #10b981; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+  .grid-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .grid-card .icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+  .grid-card h4 { margin: 0; font-size: 15px; }
+  .grid-card p { margin: 0; font-size: 11px; color: var(--hint); }
+
   .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
-    background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-    border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center;
-    padding-bottom: env(safe-area-inset-bottom); z-index: 100;
+    position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+    background: rgba(10, 10, 15, 0.95); border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; align-items: center;
+    padding-bottom: env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(20px);
   }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--hint); transition: 0.3s; }
-  .nav-item.active { color: var(--accent); transform: translateY(-2px); }
-  .nav-icon { font-size: 24px; }
-  
-  input {
-    width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border);
-    background: rgba(0, 0, 0, 0.3); color: var(--text); font-size: 16px; outline: none; margin-bottom: 12px;
-    transition: border-color 0.2s;
-  }
-  input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
-  
-  .progress-bar { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin: 15px 0; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.4s ease; box-shadow: 0 0 10px var(--accent); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--hint); transition: 0.2s; flex: 1; }
+  .nav-item.active { color: var(--accent2); font-weight: 700; }
+  .nav-icon { font-size: 20px; }
 
-  .legal-text { font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; line-height: 1.4; margin-top: 20px; padding: 0 10px; }
+  .screen { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .profile-card { background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.2)); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; }
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(124,58,237,0.4); }
+  
+  .tariff-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+  .tariff-card.vip { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+  .tariff-card.ai { border-color: var(--accent2); background: rgba(6, 182, 212, 0.1); }
+  .tariff-price { font-size: 28px; font-weight: 800; margin: 10px 0; }
+  .tariff-features { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; color: var(--hint); line-height: 1.8; }
+  .tariff-features li::before { content: '✔'; color: #10b981; margin-right: 8px; }
+  
+  .btn { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; width: 100%; margin-bottom: 10px; }
+  .btn:active { opacity: 0.8; }
+  .btn.vip { background: #ef4444; }
+  .btn.ai { background: var(--accent2); }
+  .btn.secondary { background: rgba(255,255,255,0.1); color: var(--text); }
+
+  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; gap: 12px; }
+  .review-avatar { width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; }
+  .review-content h4 { margin: 0 0 5px 0; font-size: 14px; display: flex; justify-content: space-between; }
+  .review-content p { margin: 0; font-size: 13px; color: var(--hint); line-height: 1.4; }
+  .stars { color: var(--gold); font-size: 12px; }
+
+  .side-menu {
+    position: fixed; top: 0; left: -100%; width: 80%; height: 100%;
+    background: #111118; z-index: 200; transition: 0.3s; padding: 20px;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+  }
+  .side-menu.open { left: 0; }
+  .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 199; display: none; }
+  .side-menu-overlay.open { display: block; }
+  .side-menu h2 { margin-top: 0; }
+  .side-menu ul { list-style: none; padding: 0; }
+  .side-menu li { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 10px; }
+  .side-menu .vip-alert { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; padding: 15px; border-radius: 12px; margin-top: 20px; }
+
+  .roulette-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; }
+  .wheel-container { position: relative; width: 280px; height: 280px; margin-bottom: 20px; }
+  .wheel {
+    width: 100%; height: 100%; border-radius: 50%;
+    background: conic-gradient(#ef4444 0deg 120deg, #10b981 120deg 240deg, #3b82f6 240deg 360deg);
+    border: 8px solid #222; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.1, 1);
+    position: relative;
+  }
+  .wheel::after { content: ''; position: absolute; top: 50%; left: 50%; width: 30px; height: 30px; background: #111; border-radius: 50%; transform: translate(-50%, -50%); border: 4px solid #444; z-index: 2; }
+  .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #fff; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); }
+  
+  .bet-controls { width: 100%; background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+  .bet-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+  .bet-input-row input { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 16px; text-align: center; }
+  .multipliers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+  .mult-btn { background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; text-align: center; }
+  .mult-btn:active { background: #333; }
+  .result-text { text-align: center; font-size: 20px; font-weight: 800; margin-top: 15px; min-height: 28px; }
 </style>
 </head>
 <body>
 
-<div id="screen-profile" class="screen active">
-  <div class="header">
-    <h2>Профиль</h2>
-    <div class="avatar"></div>
+<div class="side-menu-overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <h2>Меню</h2>
+  <ul>
+    <li>👤 Мой профиль</li>
+    <li>⚙️ Настройки</li>
+    <li>💬 Поддержка</li>
+    <li>📜 Правила</li>
+  </ul>
+  <div class="vip-alert">
+    <h3 style="margin: 0 0 5px 0; color: #ef4444;">💎 VIP-доступ</h3>
+    <p style="margin: 0; font-size: 13px; color: #fff;">У вас нет активного VIP-статуса. Купите в разделе Тарифы.</p>
   </div>
-  
-  <div class="top-buttons">
-    <button class="action-btn btn-green" onclick="switchTab('screen-shop', document.querySelectorAll('.nav-item')[1])">🛒 Магазин</button>
-    <button class="action-btn btn-red" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">🚀 Перейти в приложение</button>
-  </div>
+</div>
 
-  <div class="glass-card">
-    <h3 style="margin: 0 0 5px 0; font-size: 22px;" id="userName">Загрузка...</h3>
-    <p style="color: var(--hint); font-size: 14px; margin: 0;" id="userTag">@username</p>
-    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">ID</div><div id="userId" style="font-weight: 700;">0</div></div>
-      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">Premium</div><div id="userPrem" style="font-weight: 700;">Нет</div></div>
-      <div><div style="font-size: 12px; color: var(--hint); margin-bottom: 4px;">Реферал</div><div id="userSub" style="font-weight: 700; color: var(--accent);">FREE</div></div>
+<div class="top-bar">
+  <div style="font-size: 24px; cursor: pointer;" onclick="toggleMenu()">☰</div>
+  <div class="logo">Aegis<span>Pro</span></div>
+  <div class="balance"><span class="balance-star">⭐</span> <span id="headerBalance">100</span></div>
+</div>
+
+<div id="screen-home" class="screen active">
+  <div class="carousel">
+    <div class="banner b-1" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[4])">
+      <h3>Новая игра!</h3>
+      <p>Испытай удачу в Рулетке</p>
+    </div>
+    <div class="banner b-2">
+      <h3>Анонимный чат</h3>
+      <p>Общайся без страха</p>
+    </div>
+    <div class="banner b-3">
+      <h3>VIP-статус</h3>
+      <p>Все привилегии в одном месте</p>
     </div>
   </div>
 
-  <div class="glass-card">
-    <h3 style="margin: 0 0 10px 0;">Новые функции доступа</h3>
-    <p style="color: var(--hint); font-size: 14px; margin: 0;">Слева активирован VIP-доступ. Откройте вкладку «Магазин», чтобы узнать больше.</p>
+  <div class="section-title">Live сейчас <span style="color: var(--accent2); font-size: 14px;">Смотреть все</span></div>
+  <div class="row-cards">
+    <div class="row-card">
+      <div class="live">🟢 344 играют</div>
+      <h4>Сканер сети</h4>
+      <p style="font-size: 11px; color: var(--hint); margin:0;">Проверка узлов</p>
+    </div>
+    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[4])">
+      <div class="live">🟢 19 играют</div>
+      <h4>Рулетка</h4>
+      <p style="font-size: 11px; color: var(--hint); margin:0;">Удвой ставку</p>
+    </div>
+    <div class="row-card">
+      <div class="live">🟢 88 играют</div>
+      <h4>Шифратор</h4>
+      <p style="font-size: 11px; color: var(--hint); margin:0;">Защита данных</p>
+    </div>
   </div>
 
-  <div class="bottom-buttons">
-    <button class="action-btn btn-blue" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">💬 Поддержка</button>
-    <button class="action-btn btn-grey" onclick="tg.showAlert('Agram Bot v1.0. Разработано для демонстрации.')">ℹ️ О боте</button>
-  </div>
-
-  <div class="legal-text">
-    Отказ от ответственности: Данный бот и мини-приложение предоставляются исключительно в демонстрационных целях. Администрация не несет ответственности за любые действия пользователей, включая переводы средств, и не гарантирует работоспособность сторонних сервисов. Используя бота, вы подтверждаете, что действуете на свой страх и риск и не имеете претензий к разработчикам. Все транзакции проводятся вне бота, администрация не является получателем платежей.
+  <div class="section-title">Сервисы</div>
+  <div class="grid-2">
+    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
+      <div class="icon" style="background: rgba(6, 182, 212, 0.2);">🛡️</div>
+      <h4>Сканер PRO</h4>
+      <p>Глубокая проверка</p>
+    </div>
+    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
+      <div class="icon" style="background: rgba(16, 185, 129, 0.2);">🕵️</div>
+      <h4>Анонимный чат</h4>
+      <p>Без логов</p>
+    </div>
+    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
+      <div class="icon" style="background: rgba(239, 68, 68, 0.2);">🛡️</div>
+      <h4>Сканер уязвимостей</h4>
+      <p>Аудит безопасности</p>
+    </div>
+    <div class="grid-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[4])">
+      <div class="icon" style="background: rgba(245, 158, 11, 0.2);">🎰</div>
+      <h4>Рулетка</h4>
+      <p>Игра на звезды</p>
+    </div>
   </div>
 </div>
 
-<div id="screen-shop" class="screen">
-  <div class="header"><h2>Магазин</h2></div>
-  
-  <div class="glass-card" style="border-color: rgba(168, 85, 247, 0.4);">
-    <h3 style="margin: 0;">💎 VIP-доступ</h3>
-    <p style="color: var(--hint); font-size: 14px; margin: 5px 0 15px 0;">Полный доступ ко всем функциям навсегда + личный менеджер.</p>
-    <div style="font-size: 32px; font-weight: 800; color: var(--accent); margin: 10px 0 20px 0; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);">1000 ₽</div>
-    <button class="btn" onclick="buySub('premium')">Купить VIP</button>
+<div id="screen-services" class="screen">
+  <h2>Все сервисы</h2>
+  <p style="color: var(--hint); font-size: 14px; margin-bottom: 20px;">Расширенные инструменты для работы и безопасности.</p>
+
+  <div class="tariff-card">
+    <h3 style="margin: 0 0 5px 0;">🛡️ Сканер PRO</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0 0 10px 0;">Глубокая проверка данных. Владелец бота запросит у вас необходимую информацию и пришлёт отчёт.</p>
+    <ul class="tariff-features">
+      <li>Детальный отчёт по открытым данным</li>
+      <li>Проверка по базам утечек</li>
+      <li>Ручная модерация и помощь</li>
+    </ul>
+    <button class="btn ai" onclick="buySub('scanner')">Купить Сканер PRO (1500 ₽)</button>
   </div>
-  
-  <div class="glass-card">
-    <h3 style="margin: 0;">📦 Реферал</h3>
-    <p style="color: var(--hint); font-size: 14px; margin: 5px 0 15px 0;">Доступ к расширенной проверке и партнерской программе на 30 дней.</p>
-    <div style="font-size: 28px; font-weight: 800; color: var(--accent2); margin: 10px 0 20px 0;">500 ₽</div>
-    <button class="btn secondary" onclick="buySub('standard')">Купить Реферал</button>
+
+  <div class="tariff-card">
+    <h3 style="margin: 0 0 5px 0;">🕵️ Анонимный чат</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0 0 10px 0;">Зашифрованный мессенджер с удалением истории через 24 часа.</p>
+    <ul class="tariff-features">
+      <li>Сквозное шифрование</li>
+      <li>Автоудаление сообщений</li>
+      <li>Защита от скриншотов</li>
+    </ul>
+    <button class="btn" onclick="buySub('standard')">Активировать (500 ₽)</button>
+  </div>
+
+  <div class="tariff-card">
+    <h3 style="margin: 0 0 5px 0;">🔍 Сканер уязвимостей</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0 0 10px 0;">Проверка открытых данных вашего профиля и утечек в базах.</p>
+    <ul class="tariff-features">
+      <li>Поиск утечек по юзернейму</li>
+      <li>Проверка открытых портов (демо)</li>
+      <li>Отчёт о цифровой гигиене</li>
+    </ul>
+    <button class="btn vip" onclick="buySub('premium')">Доступно в VIP (1000 ₽)</button>
   </div>
 </div>
 
-<div id="screen-dox" class="screen">
-  <div class="header"><h2>Снос</h2></div>
-  <div class="glass-card" id="doxInputCard">
-    <p style="color: var(--hint); font-size: 14px; margin-bottom: 20px;">Введите юзернейм для формирования жалобы.</p>
-    <input type="text" id="targetUser" placeholder="@username">
-    <button class="btn" onclick="startDox()" id="startDoxBtn">Начать снос</button>
+<div id="screen-reviews" class="screen">
+  <h2>Отзывы</h2>
+  
+  <div class="tariff-card" style="border-color: var(--accent2); background: rgba(6, 182, 212, 0.1);">
+    <h3 style="margin: 0 0 5px 0;">📢 Наш канал</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0 0 15px 0;">Подпишитесь на наш Telegram-канал, чтобы получить доступ ко всем функциям приложения.</p>
+    <button class="btn ai" id="subscribeBtn" onclick="checkSubscription()">Подписаться на канал</button>
   </div>
-  <div class="glass-card" id="doxProgressCard" style="display: none;">
-    <h3 id="doxStatus" style="margin-bottom: 5px;">Обработка...</h3>
-    <div class="progress-bar"><div class="progress-fill" id="doxProgress"></div></div>
-    <div id="doxPercent" style="text-align: right; font-weight: 700; margin-top: 5px; color: var(--accent);">0%</div>
-    <div id="doxFiles" style="display: none; margin-top: 20px; font-family: monospace; font-size: 14px; color: #10b981; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);"></div>
+
+  <h3 style="margin-top: 20px;">Что говорят пользователи</h3>
+  
+  <div class="review-card">
+    <div class="review-avatar"></div>
+    <div class="review-content">
+      <h4>@alex_cyber <span class="stars">★★★★★</span></h4>
+      <p>Бот топ. Сканер PRO реально находит то, что другие не видят. Рекомендую VIP.</p>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-avatar"></div>
+    <div class="review-content">
+      <h4>@nina_sec <span class="stars">★★★★★</span></h4>
+      <p>Анонимный чат — это то, что я искала. Очень удобно и безопасно. Спасибо разработчикам!</p>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-avatar"></div>
+    <div class="review-content">
+      <h4>@max_dev <span class="stars">★★★★☆</span></h4>
+      <p>Сканер PRO выручает с аудитом. Иногда задумывается, но в целом огонь.</p>
+    </div>
+  </div>
+</div>
+
+<div id="screen-tariffs" class="screen">
+  <h2>Тарифы и подписки</h2>
+  
+  <div class="tariff-card vip">
+    <h3 style="margin: 0 0 5px 0; color: #ef4444;">💎 VIP-доступ</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;">Все привилегии и приоритетная поддержка.</p>
+    <div class="tariff-price" style="color: #ef4444;">1000 ₽</div>
+    <ul class="tariff-features">
+      <li>Все функции из стандарта</li>
+      <li>Сканер уязвимостей</li>
+      <li>Приоритетная поддержка 24/7</li>
+      <li>Эксклюзивные бейджи</li>
+    </ul>
+    <button class="btn vip" onclick="buySub('premium')">Купить VIP</button>
+  </div>
+
+  <div class="tariff-card ai">
+    <h3 style="margin: 0 0 5px 0; color: var(--accent2);">🛡️ Сканер PRO</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;">Ручной аудит безопасности.</p>
+    <div class="tariff-price" style="color: var(--accent2);">1500 ₽</div>
+    <ul class="tariff-features">
+      <li>Детальный отчёт по открытым данным</li>
+      <li>Проверка по базам утечек</li>
+      <li>Ручная модерация и помощь</li>
+    </ul>
+    <button class="btn ai" onclick="buySub('scanner')">Купить Сканер PRO</button>
+  </div>
+
+  <div class="tariff-card">
+    <h3 style="margin: 0 0 5px 0;">📦 Стандарт</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;">Базовый доступ к функциям.</p>
+    <div class="tariff-price" style="color: var(--accent);">500 ₽</div>
+    <ul class="tariff-features">
+      <li>Анонимный чат</li>
+      <li>Проверка открытых данных</li>
+      <li>Доступ к архиву</li>
+    </ul>
+    <button class="btn" onclick="buySub('standard')">Купить Стандарт</button>
+  </div>
+</div>
+
+<div id="screen-games" class="screen">
+  <h2>Рулетка</h2>
+  <p style="color: var(--hint); font-size: 14px; margin-bottom: 20px;">Испытай удачу и умножь свои звезды!</p>
+
+  <div class="roulette-wrapper">
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+    </div>
+
+    <div class="bet-controls">
+      <div class="bet-input-row">
+        <input type="number" id="betAmount" placeholder="Ставка" value="10" min="1">
+        <div style="display:flex; align-items:center; font-weight:700; color:var(--gold);">⭐</div>
+      </div>
+      
+      <div class="multipliers">
+        <div class="mult-btn" onclick="setMultiplier(2)">x2<br><span style="font-size:10px;color:#aaa;">50%</span></div>
+        <div class="mult-btn" onclick="setMultiplier(3)">x3<br><span style="font-size:10px;color:#aaa;">25%</span></div>
+        <div class="mult-btn" onclick="setMultiplier(5)">x5<br><span style="font-size:10px;color:#aaa;">10%</span></div>
+      </div>
+
+      <button class="btn" onclick="spinWheel()" id="spinBtn" style="margin-bottom:0;">Крутить</button>
+      <div class="result-text" id="resultText"></div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-profile" class="screen">
+  <h2>Профиль</h2>
+  
+  <div class="profile-card">
+    <div class="profile-avatar">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+    </div>
+    <h3 id="userName" style="margin: 0; font-size: 22px;">Загрузка...</h3>
+    <p id="userTag" style="color: var(--hint); margin: 5px 0 15px 0;">@username</p>
+    
+    <div style="display: flex; justify-content: center; gap: 20px;">
+      <div><div style="font-size: 12px; color: var(--hint);">ID</div><div id="userId" style="font-weight: 700;">0</div></div>
+      <div><div style="font-size: 12px; color: var(--hint);">Premium</div><div id="userPrem" style="font-weight: 700;">Нет</div></div>
+      <div><div style="font-size: 12px; color: var(--hint);">Тариф</div><div id="userSub" style="font-weight: 700; color: var(--accent2);">FREE</div></div>
+    </div>
+  </div>
+
+  <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">💬 Поддержка</button>
+  <button class="btn secondary" onclick="tg.showAlert('Aegis Pro v3.0. Демо-версия.')">ℹ️ О приложении</button>
+
+  <div style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; line-height: 1.4; margin-top: 20px; padding: 0 10px;">
+    Отказ от ответственности: Данный бот и мини-приложение предоставляются исключительно в демонстрационных целях. Администрация не несет ответственности за любые действия пользователей, включая переводы средств. Все транзакции проводятся вне бота, администрация не является получателем платежей.
   </div>
 </div>
 
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="switchTab('screen-profile', this)">
+  <div class="nav-item active" onclick="switchTab('screen-home', this)">
+    <div class="nav-icon">🏠</div>Главная
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-services', this)">
+    <div class="nav-icon">📱</div>Сервисы
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-reviews', this)">
+    <div class="nav-icon">⭐</div>Отзывы
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-games', this)">
+    <div class="nav-icon">🎰</div>Игры
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-tariffs', this)">
+    <div class="nav-icon">💎</div>Тарифы
+  </div>
+  <div class="nav-item" onclick="switchTab('screen-profile', this)">
     <div class="nav-icon">👤</div>Профиль
-  </div>
-  <div class="nav-item" onclick="switchTab('screen-shop', this)">
-    <div class="nav-icon">🛒</div>Магазин
-  </div>
-  <div class="nav-item" onclick="switchTab('screen-dox', this)">
-    <div class="nav-icon">💀</div>Снос
   </div>
 </div>
 
 <script>
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color');
+
+const CHANNEL_URL = 'https://t.me/aegis_pro_official'; 
 
 const u = tg.initDataUnsafe?.user || { id: 0, first_name: "Гость", username: "guest", is_premium: false };
 document.getElementById('userName').innerText = u.first_name;
@@ -183,8 +425,17 @@ document.getElementById('userId').innerText = u.id;
 document.getElementById('userPrem').innerText = u.is_premium ? 'Да' : 'Нет';
 
 let db = JSON.parse(localStorage.getItem('agram_db')) || {};
-if (!db[u.id]) db[u.id] = { sub: 'FREE' };
+if (!db[u.id]) db[u.id] = { sub: 'FREE', subscribed: false, stars: 100 };
+if (typeof db[u.id].stars === 'undefined') db[u.id].stars = 100;
+
 document.getElementById('userSub').innerText = db[u.id].sub;
+document.getElementById('headerBalance').innerText = db[u.id].stars;
+document.getElementById('betAmount').value = 10;
+
+function updateBalanceUI() {
+  document.getElementById('headerBalance').innerText = db[u.id].stars;
+  localStorage.setItem('agram_db', JSON.stringify(db));
+}
 
 function switchTab(screenId, navElement) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -194,56 +445,51 @@ function switchTab(screenId, navElement) {
   tg.HapticFeedback.impactOccurred('light');
 }
 
+function toggleMenu() {
+  document.getElementById('sideMenu').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
 function buySub(type) {
-  const link = type === 'premium' 
-    ? 'https://t.me/durov_stake777?text=Хочу купить VIP' 
-    : 'https://t.me/durov_stake777?text=Хочу купить Реферал';
+  let link = '';
+  if (type === 'premium') {
+    link = 'https://t.me/durov_stake777?text=Хочу купить VIP за 1000 ₽';
+  } else if (type === 'scanner') {
+    link = 'https://t.me/durov_stake777?text=Хочу купить Сканер PRO за 1500 ₽. Какие данные вам отправить для проверки?';
+  } else {
+    link = 'https://t.me/durov_stake777?text=Хочу купить Стандарт за 500 ₽';
+  }
+  
   tg.openTelegramLink(link);
   setTimeout(() => {
-    db[u.id].sub = type === 'premium' ? 'VIP' : 'REF';
+    db[u.id].sub = type === 'premium' ? 'VIP' : (type === 'scanner' ? 'SCAN' : 'STD');
     localStorage.setItem('agram_db', JSON.stringify(db));
     document.getElementById('userSub').innerText = db[u.id].sub;
-    tg.showAlert(`Тариф ${type === 'premium' ? 'VIP' : 'Реферал'} активирован (Демо)`);
+    tg.showAlert(`Тариф ${db[u.id].sub} активирован (Демо)`);
   }, 1000);
 }
 
-let isDoxing = false;
-function startDox() {
-  if (isDoxing) return;
-  const target = document.getElementById('targetUser').value.trim();
-  if (!target) { tg.showAlert('Введите юзернейм'); return; }
-  isDoxing = true;
-  document.getElementById('doxInputCard').style.display = 'none';
-  document.getElementById('doxProgressCard').style.display = 'block';
-  const status = document.getElementById('doxStatus');
-  const progress = document.getElementById('doxProgress');
-  const percentText = document.getElementById('doxPercent');
-  const files = document.getElementById('doxFiles');
-  const steps = [
-    { p: 10, t: 'Анализ профиля...' }, { p: 15, t: 'Сбор данных...' },
-    { p: 50, t: 'Генерация жалобы...' }, { p: 100, t: 'Жалоба отправлена!' }
-  ];
-  let i = 0;
-  function process() {
-    if (i < steps.length) {
-      const s = steps[i];
-      status.innerText = s.t;
-      progress.style.width = s.p + '%';
-      percentText.innerText = s.p + '%';
-      tg.HapticFeedback.impactOccurred('light');
-      i++;
-      setTimeout(process, 1200);
-    } else {
-      status.innerText = '✅ Готово (Демо)';
-      status.style.color = '#10b981';
-      files.innerHTML = '📄 report_101.txt<br>📄 evidence_log.json<br>📁 archive_target.zip';
-      files.style.display = 'block';
-      isDoxing = false;
-      tg.HapticFeedback.notificationOccurred('success');
-    }
-  }
-  process();
+function checkSubscription() {
+  tg.openTelegramLink(CHANNEL_URL);
+  
+  setTimeout(() => {
+    db[u.id].subscribed = true;
+    localStorage.setItem('agram_db', JSON.stringify(db));
+    document.getElementById('subscribeBtn').innerText = '✅ Вы подписаны!';
+    document.getElementById('subscribeBtn').style.background = '#10b981';
+    tg.HapticFeedback.notificationOccurred('success');
+    tg.showAlert('Доступ к приложению открыт!');
+  }, 2000);
 }
-</script>
-</body>
-</html>
+
+let currentRotation = 0;
+let isSpinning = false;
+
+function setMultiplier(mult) {
+  if (isSpinning) return;
+  tg.HapticFeedback.impactOccurred('light');
+  tg.showAlert(`Выбран множитель x${mult}. Шанс выигрыша: ${mult === 2 ? '50%' : (mult === 3 ? '25%' : '10%')}`);
+}
+
+function spinWheel() {
+  if (isSpinning) return
