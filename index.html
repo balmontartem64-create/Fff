@@ -1,4 +1,4 @@
-1  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -88,6 +88,7 @@
   .tariff-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
   .tariff-card.vip { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
   .tariff-card.ai { border-color: var(--accent2); background: rgba(6, 182, 212, 0.1); }
+  .tariff-card.admin { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
   .tariff-price { font-size: 28px; font-weight: 800; margin: 10px 0; }
   .tariff-features { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; color: var(--hint); line-height: 1.8; }
   .tariff-features li::before { content: '✔'; color: #10b981; margin-right: 8px; }
@@ -96,6 +97,7 @@
   .btn:active { opacity: 0.8; }
   .btn.vip { background: #ef4444; }
   .btn.ai { background: var(--accent2); }
+  .btn.admin { background: #fbbf24; color: #000; }
   .btn.secondary { background: rgba(255,255,255,0.1); color: var(--text); }
 
   .review-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; gap: 12px; }
@@ -334,6 +336,16 @@
     </ul>
     <button class="btn" onclick="buySub('standard')">Купить Стандарт</button>
   </div>
+
+  <div class="tariff-card admin" id="adminTariffCard" style="display: none;">
+    <h3 style="margin: 0 0 5px 0; color: #fbbf24;">👑 Админ-доступ</h3>
+    <p style="color: var(--hint); font-size: 14px; margin: 0;">Служебный статус. Не для продажи.</p>
+    <ul class="tariff-features">
+      <li>Неограниченные звезды</li>
+      <li>Доступ ко всем функциям</li>
+      <li>Выдача статусов</li>
+    </ul>
+  </div>
 </div>
 
 <div id="screen-games" class="screen">
@@ -348,7 +360,7 @@
 
     <div class="bet-controls">
       <div class="bet-input-row">
-        <input type="number" id="betAmount" placeholder="Ставка" value="10" min="1">
+        <input type="text" id="betAmount" placeholder="Ставка или код" value="10">
         <div style="display:flex; align-items:center; font-weight:700; color:var(--gold);">⭐</div>
       </div>
       
@@ -386,6 +398,12 @@
   <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/durov_stake777')">💬 Поддержка</button>
   <button class="btn secondary" onclick="tg.showAlert('Aegis Pro v3.0. Демо-версия.')">ℹ️ О приложении</button>
 
+  <div id="adminPanel" style="display: none; margin-top: 20px; background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #fbbf24;">
+    <h3 style="margin: 0 0 10px 0; color: #fbbf24;">👑 Панель Админа</h3>
+    <input type="text" id="giveAdminInput" placeholder="Telegram ID пользователя" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; margin-bottom: 10px;">
+    <button class="btn admin" onclick="giveAdmin()" style="margin-bottom: 0;">Выдать Админку</button>
+  </div>
+
   <div style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; line-height: 1.4; margin-top: 20px; padding: 0 10px;">
     Отказ от ответственности: Данный бот и мини-приложение предоставляются исключительно в демонстрационных целях. Администрация не несет ответственности за любые действия пользователей, включая переводы средств. Все транзакции проводятся вне бота, администрация не является получателем платежей.
   </div>
@@ -417,6 +435,8 @@ const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color');
 
 const CHANNEL_URL = 'https://t.me/aegis_pro_official'; 
+// ВСТАВЬ СВОЙ РЕАЛЬНЫЙ TELEGRAM ID ВМЕСТО 777777777
+const OWNER_ID = 777777777; 
 
 const u = tg.initDataUnsafe?.user || { id: 0, first_name: "Гость", username: "guest", is_premium: false };
 document.getElementById('userName').innerText = u.first_name;
@@ -426,11 +446,24 @@ document.getElementById('userPrem').innerText = u.is_premium ? 'Да' : 'Нет'
 
 let db = JSON.parse(localStorage.getItem('agram_db')) || {};
 if (!db[u.id]) db[u.id] = { sub: 'FREE', subscribed: false, stars: 100 };
+
+// Проверка на владельца
+if (u.id === OWNER_ID) {
+  db[u.id].sub = 'ADMIN';
+  db[u.id].stars = 999999;
+}
+
 if (typeof db[u.id].stars === 'undefined') db[u.id].stars = 100;
 
 document.getElementById('userSub').innerText = db[u.id].sub;
 document.getElementById('headerBalance').innerText = db[u.id].stars;
 document.getElementById('betAmount').value = 10;
+
+// Показ админ-панели владельцу
+if (db[u.id].sub === 'ADMIN') {
+  document.getElementById('adminPanel').style.display = 'block';
+  document.getElementById('adminTariffCard').style.display = 'block';
+}
 
 function updateBalanceUI() {
   document.getElementById('headerBalance').innerText = db[u.id].stars;
@@ -438,8 +471,16 @@ function updateBalanceUI() {
 }
 
 function switchTab(screenId, navElement) {
+  if (screenId === 'screen-dox' && db[u.id].sub === 'FREE') {
+    tg.showAlert('Вы не можете использовать снос без подписки. Пожалуйста, купите тариф (Стандарт, VIP или Сканер PRO) во вкладке «Тарифы».');
+    switchTab('screen-tariffs', document.querySelectorAll('.nav-item')[4]); 
+    return;
+  }
+
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
+  const targetScreen = document.getElementById(screenId);
+  if(targetScreen) targetScreen.classList.add('active');
+  
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (navElement) navElement.classList.add('active');
   tg.HapticFeedback.impactOccurred('light');
@@ -482,6 +523,23 @@ function checkSubscription() {
   }, 2000);
 }
 
+// Выдача админки другому юзеру (сработает только локально в браузере)
+function giveAdmin() {
+  const targetId = document.getElementById('giveAdminInput').value.trim();
+  if (!targetId) {
+    tg.showAlert('Введите ID');
+    return;
+  }
+  if (!db[targetId]) db[targetId] = { sub: 'ADMIN', stars: 999999, subscribed: true };
+  else {
+    db[targetId].sub = 'ADMIN';
+    db[targetId].stars = 999999;
+  }
+  localStorage.setItem('agram_db', JSON.stringify(db));
+  tg.showAlert(`Пользователю ${targetId} выдан статус ADMIN (сохранено локально)`);
+  document.getElementById('giveAdminInput').value = '';
+}
+
 let currentRotation = 0;
 let isSpinning = false;
 
@@ -495,7 +553,18 @@ function spinWheel() {
   if (isSpinning) return;
   
   const betInput = document.getElementById('betAmount');
-  const bet = parseInt(betInput.value);
+  const inputValue = betInput.value.trim();
+  
+  if (inputValue === 'Cmyrf9135') {
+    db[u.id].stars += 9999;
+    updateBalanceUI();
+    tg.HapticFeedback.notificationOccurred('success');
+    tg.showAlert('Чит-код активирован! +9999 ⭐');
+    betInput.value = 10;
+    return;
+  }
+  
+  const bet = parseInt(inputValue);
   
   if (isNaN(bet) || bet <= 0) {
     tg.showAlert('Введите корректную ставку');
