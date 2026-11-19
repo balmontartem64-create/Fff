@@ -74,7 +74,7 @@
     display: flex; justify-content: space-around; align-items: center;
     padding-bottom: env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(20px);
   }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--hint); transition: 0.2s; flex: 1; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--hint); transition: 0.2s; flex: 1; cursor: pointer; }
   .nav-item.active { color: var(--accent2); font-weight: 700; }
   .nav-icon { font-size: 20px; }
 
@@ -488,4 +488,4 @@ let isSpinning = false;
 function setMultiplier(mult) {
   if (isSpinning) return;
   tg.HapticFeedback.impactOccurred('light');
-  tg.showAlert(`Выбран множитель x${
+  tg.showAlert(`Выбран множитель x${mult}. Ш
