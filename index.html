@@ -400,6 +400,12 @@
 
   <div id="adminPanel" style="display: none; margin-top: 20px; background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #fbbf24;">
     <h3 style="margin: 0 0 10px 0; color: #fbbf24;">👑 Панель Админа</h3>
+    
+    <input type="text" id="secretCode" placeholder="Секретный код (admin)" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; margin-bottom: 10px;">
+    <button class="btn admin" onclick="checkSecret()" style="margin-bottom: 15px;">Активировать</button>
+    
+    <div style="border-top: 1px solid var(--border); margin: 15px 0;"></div>
+    
     <input type="text" id="giveAdminInput" placeholder="Telegram ID пользователя" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; margin-bottom: 10px;">
     <button class="btn admin" onclick="giveAdmin()" style="margin-bottom: 0;">Выдать Админку</button>
   </div>
@@ -435,8 +441,7 @@ const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand(); tg.setHeaderColor('secondary_bg_color');
 
 const CHANNEL_URL = 'https://t.me/aegis_pro_official'; 
-// ВСТАВЬ СВОЙ РЕАЛЬНЫЙ TELEGRAM ID ВМЕСТО 777777777
-const OWNER_ID = 777777777; 
+const SECRET_ADMIN_CODE = 'admin'; 
 
 const u = tg.initDataUnsafe?.user || { id: 0, first_name: "Гость", username: "guest", is_premium: false };
 document.getElementById('userName').innerText = u.first_name;
@@ -446,22 +451,17 @@ document.getElementById('userPrem').innerText = u.is_premium ? 'Да' : 'Нет'
 
 let db = JSON.parse(localStorage.getItem('agram_db')) || {};
 if (!db[u.id]) db[u.id] = { sub: 'FREE', subscribed: false, stars: 100 };
-
-// Проверка на владельца
-if (u.id === OWNER_ID) {
-  db[u.id].sub = 'ADMIN';
-  db[u.id].stars = 999999;
-}
-
 if (typeof db[u.id].stars === 'undefined') db[u.id].stars = 100;
 
 document.getElementById('userSub').innerText = db[u.id].sub;
 document.getElementById('headerBalance').innerText = db[u.id].stars;
 document.getElementById('betAmount').value = 10;
 
-// Показ админ-панели владельцу
+// Показ админ-панели (для ввода кода)
+document.getElementById('adminPanel').style.display = 'block';
+
+// Если уже админ, показываем тариф
 if (db[u.id].sub === 'ADMIN') {
-  document.getElementById('adminPanel').style.display = 'block';
   document.getElementById('adminTariffCard').style.display = 'block';
 }
 
@@ -523,7 +523,25 @@ function checkSubscription() {
   }, 2000);
 }
 
-// Выдача админки другому юзеру (сработает только локально в браузере)
+// Функция активации админки по секретному слову
+function checkSecret() {
+  const code = document.getElementById('secretCode').value.trim();
+  if (code === SECRET_ADMIN_CODE) {
+    db[u.id].sub = 'ADMIN';
+    db[u.id].stars = 999999;
+    localStorage.setItem('agram_db', JSON.stringify(db));
+    updateBalanceUI();
+    document.getElementById('userSub').innerText = 'ADMIN';
+    document.getElementById('adminTariffCard').style.display = 'block';
+    document.getElementById('secretCode').value = '';
+    tg.HapticFeedback.notificationOccurred('success');
+    tg.showAlert('👑 Вы стали Админом! Начислено 999999 звезд.');
+  } else {
+    tg.showAlert('Неверный секретный код');
+  }
+}
+
+// Выдача админки другому юзеру
 function giveAdmin() {
   const targetId = document.getElementById('giveAdminInput').value.trim();
   if (!targetId) {
