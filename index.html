@@ -92,7 +92,7 @@
   .tariff-features { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; color: var(--hint); line-height: 1.8; }
   .tariff-features li::before { content: '✔'; color: #10b981; margin-right: 8px; }
   
-  .btn { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; width: 100%; margin-bottom: 10px; }
+  .btn { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; width: 100%; margin-bottom: 10px; cursor: pointer; }
   .btn:active { opacity: 0.8; }
   .btn.vip { background: #ef4444; }
   .btn.ai { background: var(--accent2); }
@@ -133,7 +133,7 @@
   .bet-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
   .bet-input-row input { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 16px; text-align: center; }
   .multipliers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-  .mult-btn { background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; text-align: center; }
+  .mult-btn { background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; text-align: center; cursor: pointer; }
   .mult-btn:active { background: #333; }
   .result-text { text-align: center; font-size: 20px; font-weight: 800; margin-top: 15px; min-height: 28px; }
 </style>
@@ -156,7 +156,7 @@
 </div>
 
 <div class="top-bar">
-  <div style="font-size: 24px; cursor: pointer;" onclick="toggleMenu()">☰</div>
+  <div style="font-size: 24px; cursor: pointer; padding: 5px;" onclick="toggleMenu()">☰</div>
   <div class="logo">Aegis<span>Pro</span></div>
   <div class="balance"><span class="balance-star">⭐</span> <span id="headerBalance">100</span></div>
 </div>
@@ -488,8 +488,4 @@ let isSpinning = false;
 function setMultiplier(mult) {
   if (isSpinning) return;
   tg.HapticFeedback.impactOccurred('light');
-  tg.showAlert(`Выбран множитель x${mult}. Шанс выигрыша: ${mult === 2 ? '50%' : (mult === 3 ? '25%' : '10%')}`);
-}
-
-function spinWheel() {
-  if (isSpinning) return
+  tg.showAlert(`Выбран множитель x${
