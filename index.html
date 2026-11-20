@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Aegis</title>
+<title>Amvora</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
@@ -16,24 +17,8 @@
     --border: rgba(255, 255, 255, 0.1);
     --gold: #fbbf24;
   }
-  
-  /* Темы */
-  body.light-theme {
-    --bg: #f2f2f7;
-    --text: #000000;
-    --hint: #666666;
-    --card: rgba(0, 0, 0, 0.05);
-    --border: rgba(0, 0, 0, 0.1);
-  }
-  body.purple-theme {
-    --bg: #0a0118;
-    --text: #ffffff;
-    --hint: #a78bfa;
-    --accent: #a855f7;
-    --accent2: #7c3aed;
-    --card: rgba(124, 58, 237, 0.1);
-    --border: rgba(168, 85, 247, 0.3);
-  }
+  body.light-theme { --bg: #f2f2f7; --text: #000000; --hint: #666666; --card: rgba(0, 0, 0, 0.05); --border: rgba(0, 0, 0, 0.1); }
+  body.purple-theme { --bg: #0a0118; --text: #ffffff; --hint: #a78bfa; --accent: #a855f7; --accent2: #7c3aed; --card: rgba(124, 58, 237, 0.1); --border: rgba(168, 85, 247, 0.3); }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -87,7 +72,6 @@
   .tariff-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
   .tariff-card.vip { border-color: #ef4444; }
   .tariff-card.ai { border-color: var(--accent2); }
-  .tariff-card.admin { border-color: #fbbf24; display: none; }
   .tariff-price { font-size: 28px; font-weight: 800; margin: 10px 0; }
   .tariff-features { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; color: var(--hint); line-height: 1.8; }
   .tariff-features li::before { content: '✔'; color: #10b981; margin-right: 8px; }
@@ -96,7 +80,6 @@
   .btn:active { opacity: 0.8; }
   .btn.vip { background: #ef4444; }
   .btn.ai { background: var(--accent2); }
-  .btn.admin { background: #fbbf24; color: #000; }
   .btn.secondary { background: var(--card); border: 1px solid var(--border); color: var(--text); }
 
   .side-menu { position: fixed; top: 0; left: -100%; width: 80%; height: 100%; background: var(--bg); z-index: 200; transition: 0.3s; padding: 20px; border-right: 1px solid var(--border); }
@@ -106,7 +89,6 @@
   .side-menu ul { list-style: none; padding: 0; }
   .side-menu li { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
 
-  /* Игры */
   .game-list { display: flex; flex-direction: column; gap: 12px; padding: 0 20px 20px; }
   .game-list-item { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; cursor: pointer; }
   .game-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 150; padding: 20px; padding-bottom: 80px; overflow-y: auto; }
@@ -118,21 +100,27 @@
   .bet-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; text-align: center; margin-bottom: 15px; }
   .result-text { text-align: center; font-size: 20px; font-weight: 800; margin-top: 15px; min-height: 28px; }
 
-  /* Краш */
-  .crash-area { position: relative; width: 100%; height: 200px; background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
-  .plane { position: absolute; bottom: 20px; left: 20px; font-size: 30px; transition: all 0.2s linear; z-index: 10; }
-  .crash-line { position: absolute; bottom: 35px; left: 20px; height: 4px; background: var(--accent); width: 0; transform-origin: left center; z-index: 5; }
+  /* Игра Авианосец */
+  .carrier-area { position: relative; width: 100%; height: 250px; background: #0a1526; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; margin-bottom: 20px; perspective: 800px; }
+  .sea { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to top, #0f2d4a, #1e4b75); }
+  .carrier-ship { position: absolute; right: -100px; bottom: 20px; font-size: 40px; transition: right 0.1s linear; z-index: 5; }
+  .plane-icon { position: absolute; bottom: 40px; left: 20px; font-size: 30px; transition: bottom 0.1s linear, left 0.1s linear; z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); transform: scaleX(-1); }
+  .multiplier { position: absolute; top: 15px; left: 15px; font-size: 28px; font-weight: 900; color: #fff; text-shadow: 0 0 10px var(--accent2); z-index: 20; }
+
+  /* Кейсы */
+  .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+  .case-item { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; }
+  .case-item img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px; }
+  .case-price { display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 700; color: var(--gold); }
 
   /* Стаканчики */
   .cups-container { display: flex; justify-content: space-around; margin: 40px 0; }
   .cup { font-size: 60px; cursor: pointer; transition: transform 0.3s; user-select: none; }
   .cup:active { transform: scale(0.9); }
 
-  /* Слоты */
   .slots-container { display: flex; justify-content: center; gap: 10px; font-size: 40px; margin: 20px 0; }
   .slot { width: 70px; height: 90px; background: var(--card); border: 2px solid var(--border); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
 
-  /* Настройки */
   .theme-option { padding: 15px; border-radius: 12px; border: 2px solid transparent; background: var(--card); margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
   .theme-option.active { border-color: var(--accent); }
   .theme-preview { width: 30px; height: 30px; border-radius: 50%; }
@@ -144,147 +132,118 @@
 <div class="side-menu" id="sideMenu">
   <h2 style="margin-top:0;">Меню</h2>
   <ul>
-    <li onclick="toggleMenu(); switchTab('screen-profile', document.querySelectorAll('.nav-item')[5])">👤 Мой профиль</li>
+    <li onclick="toggleMenu(); switchTab('screen-profile', document.querySelectorAll('.nav-item')[4])">👤 Мой профиль</li>
     <li onclick="toggleMenu(); switchTab('screen-settings', null)">⚙️ Настройки</li>
     <li onclick="tg.openTelegramLink('https://t.me/aegis_pro_official')">💬 Поддержка</li>
-    <li onclick="tg.showAlert('Правила пока в разработке.')">📜 Правила</li>
   </ul>
 </div>
 
 <div class="top-bar">
   <div style="font-size: 24px; cursor: pointer; padding: 5px;" onclick="toggleMenu()">☰</div>
-  <div class="logo">Aegis<span>Pro</span></div>
+  <div class="logo">Amvora</div>
   <div class="balance"><span class="balance-star">⭐</span> <span id="headerBalance">100</span></div>
 </div>
 
 <div id="screen-home" class="screen active">
   <div class="carousel">
-    <div class="banner b-1" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[3])">
+    <div class="banner b-1" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[2])">
       <h3>Игры!</h3>
       <p>Играй и зарабатывай звезды</p>
     </div>
-    <div class="banner b-2">
-      <h3>Анонимный чат</h3>
-      <p>Общайся без страха</p>
-    </div>
-    <div class="banner b-3">
-      <h3>VIP-статус</h3>
-      <p>Все привилегии в одном месте</p>
+    <div class="banner b-2" onclick="switchTab('screen-cases', document.querySelectorAll('.nav-item')[1])">
+      <h3>Кейсы</h3>
+      <p>Открой свой приз</p>
     </div>
   </div>
 
   <div class="section-title">Live сейчас <span style="color: var(--accent2); font-size: 14px;">Смотреть все</span></div>
   <div class="row-cards">
-    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[3])">
-      <div class="live">🟢 344 играют</div>
+    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[2])">
+      <div class="live">🟢 Онлайн: —</div>
+      <h4>Авианосец</h4>
+      <p style="font-size: 11px; color: var(--hint); margin:0;">Успей приземлиться</p>
+    </div>
+    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[2])">
+      <div class="live">🟢 Онлайн: —</div>
       <h4>Рулетка</h4>
       <p style="font-size: 11px; color: var(--hint); margin:0;">Удвой ставку</p>
     </div>
-    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[3])">
-      <div class="live">🟢 19 играют</div>
-      <h4>Краш</h4>
-      <p style="font-size: 11px; color: var(--hint); margin:0;">Успей забрать</p>
-    </div>
-    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[3])">
-      <div class="live">🟢 88 играют</div>
+    <div class="row-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[2])">
+      <div class="live">🟢 Онлайн: —</div>
       <h4>Стаканчики</h4>
       <p style="font-size: 11px; color: var(--hint); margin:0;">Найди шарик</p>
     </div>
   </div>
 
-  <div class="section-title">Сервисы</div>
+  <div class="section-title">Быстрый доступ</div>
   <div class="grid-2">
-    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
-      <div class="icon" style="background: rgba(6, 182, 212, 0.2);">🛡️</div>
-      <h4>Сканер PRO</h4>
-      <p>Глубокая проверка</p>
+    <div class="grid-card" onclick="switchTab('screen-games', document.querySelectorAll('.nav-item')[2])">
+      <div class="icon" style="background: rgba(6, 182, 212, 0.2);">🎮</div>
+      <h4>Игры</h4>
+      <p>Заработай звезды</p>
     </div>
-    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
-      <div class="icon" style="background: rgba(16, 185, 129, 0.2);">🕵️</div>
-      <h4>Анонимный чат</h4>
-      <p>Без логов</p>
-    </div>
-    <div class="grid-card" onclick="switchTab('screen-services', document.querySelectorAll('.nav-item')[1])">
-      <div class="icon" style="background: rgba(239, 68, 68, 0.2);">🔍</div>
-      <h4>Сканер уязвимостей</h4>
-      <p>Аудит безопасности</p>
-    </div>
-    <div class="grid-card" onclick="switchTab('screen-dox', null)">
-      <div class="icon" style="background: rgba(245, 158, 11, 0.2);">💀</div>
-      <h4>Снос аккаунта</h4>
-      <p>Удаление профиля</p>
+    <div class="grid-card" onclick="switchTab('screen-cases', document.querySelectorAll('.nav-item')[1])">
+      <div class="icon" style="background: rgba(239, 68, 68, 0.2);">🎁</div>
+      <h4>Кейсы</h4>
+      <p>Испытай удачу</p>
     </div>
   </div>
 </div>
 
-<div id="screen-services" class="screen">
-  <h2>Все сервисы</h2>
-  <div class="tariff-card">
-    <h3 style="margin: 0 0 5px 0;">🛡️ Сканер PRO</h3>
-    <p style="color: var(--hint); font-size: 14px;">Глубокая проверка данных.</p>
-    <button class="btn ai" onclick="buySub('scanner')">Купить Сканер PRO (1500 ₽)</button>
-  </div>
-  <div class="tariff-card">
-    <h3 style="margin: 0 0 5px 0;">🕵️ Анонимный чат</h3>
-    <p style="color: var(--hint); font-size: 14px;">Зашифрованный мессенджер.</p>
-    <button class="btn" onclick="buySub('standard')">Активировать (500 ₽)</button>
-  </div>
-  <div class="tariff-card">
-    <h3 style="margin: 0 0 5px 0;">🔍 Сканер уязвимостей</h3>
-    <p style="color: var(--hint); font-size: 14px;">Проверка утечек.</p>
-    <button class="btn vip" onclick="buySub('premium')">Доступно в VIP (1000 ₽)</button>
-  </div>
-</div>
-
-<div id="screen-reviews" class="screen">
-  <h2>Отзывы</h2>
-  <div class="tariff-card" style="border-color: var(--accent2);">
-    <h3 style="margin: 0 0 5px 0;">📢 Наш канал</h3>
-    <p style="color: var(--hint); font-size: 14px; margin-bottom: 15px;">Подпишитесь на наш Telegram-канал.</p>
-    <button class="btn ai" id="subscribeBtn" onclick="checkSubscription()">Подписаться на канал</button>
-  </div>
-  <div class="tariff-card"><h4>@alex_cyber ★★★★★</h4><p style="font-size: 13px; color: var(--hint);">Бот топ. Сканер PRO реально находит то, что другие не видят.</p></div>
-  <div class="tariff-card"><h4>@nina_sec ★★★★★</h4><p style="font-size: 13px; color: var(--hint);">Анонимный чат — это то, что я искала.</p></div>
-</div>
-
-<div id="screen-tariffs" class="screen">
-  <h2>Тарифы и подписки</h2>
-  <div class="tariff-card vip">
-    <h3 style="margin: 0 0 5px 0; color: #ef4444;">💎 VIP-доступ</h3>
-    <div class="tariff-price" style="color: #ef4444;">1000 ₽</div>
-    <button class="btn vip" onclick="buySub('premium')">Купить VIP</button>
-  </div>
-  <div class="tariff-card ai">
-    <h3 style="margin: 0 0 5px 0; color: var(--accent2);">🛡️ Сканер PRO</h3>
-    <div class="tariff-price" style="color: var(--accent2);">1500 ₽</div>
-    <button class="btn ai" onclick="buySub('scanner')">Купить Сканер PRO</button>
-  </div>
-  <div class="tariff-card">
-    <h3 style="margin: 0 0 5px 0;">📦 Стандарт</h3>
-    <div class="tariff-price" style="color: var(--accent);">500 ₽</div>
-    <button class="btn" onclick="buySub('standard')">Купить Стандарт</button>
-  </div>
-  <div class="tariff-card admin" id="adminTariffCard">
-    <h3 style="margin: 0 0 5px 0; color: #fbbf24;">👑 Админ-доступ</h3>
-    <p style="color: var(--hint); font-size: 14px;">Служебный статус.</p>
+<!-- КЕЙСЫ -->
+<div id="screen-cases" class="screen">
+  <h2>Кейсы</h2>
+  <p style="color: var(--hint); margin-bottom: 20px;">Открой кейс и получи эксклюзивный приз (с использованием Telegram Stars).</p>
+  <div class="cases-grid">
+    <div class="case-item" onclick="tg.showAlert('Оплата Stars подключается через сервер.')">
+      <div style="font-size: 60px; margin-bottom: 10px;">📦</div>
+      <h4 style="margin: 0 0 10px 0;">Обычный</h4>
+      <div class="case-price">⭐ 50</div>
+    </div>
+    <div class="case-item" onclick="tg.showAlert('Оплата Stars подключается через сервер.')">
+      <div style="font-size: 60px; margin-bottom: 10px; color: #fbbf24;">🎁</div>
+      <h4 style="margin: 0 0 10px 0; color: #fbbf24;">Редкий</h4>
+      <div class="case-price">⭐ 150</div>
+    </div>
+    <div class="case-item" onclick="tg.showAlert('Оплата Stars подключается через сервер.')">
+      <div style="font-size: 60px; margin-bottom: 10px; color: #a855f7;">💎</div>
+      <h4 style="margin: 0 0 10px 0; color: #a855f7;">Эпический</h4>
+      <div class="case-price">⭐ 500</div>
+    </div>
+    <div class="case-item" onclick="tg.showAlert('Оплата Stars подключается через сервер.')">
+      <div style="font-size: 60px; margin-bottom: 10px; color: #ef4444;">👑</div>
+      <h4 style="margin: 0 0 10px 0; color: #ef4444;">Легендарный</h4>
+      <div class="case-price">⭐ 1000</div>
+    </div>
   </div>
 </div>
 
 <div id="screen-games" class="screen">
   <h2>Выберите игру</h2>
   <div class="game-list">
+    <div class="game-list-item" onclick="openGame('carrier')">✈️ Авианосец <span>›</span></div>
     <div class="game-list-item" onclick="openGame('roulette')">🎡 Рулетка <span>›</span></div>
     <div class="game-list-item" onclick="openGame('mines')">💣 Мины <span>›</span></div>
-    <div class="game-list-item" onclick="openGame('dice')">🎲 Кости <span>›</span></div>
-    <div class="game-list-item" onclick="openGame('coin')">🪙 Монетка <span>›</span></div>
-    <div class="game-list-item" onclick="openGame('slots')">🎰 Джекпот <span>›</span></div>
-    <div class="game-list-item" onclick="openGame('guess')">🔢 Угадай число <span>›</span></div>
-    <div class="game-list-item" onclick="openGame('crash')">✈️ Краш <span>›</span></div>
     <div class="game-list-item" onclick="openGame('cups')">🥤 Стаканчики <span>›</span></div>
+    <div class="game-list-item" onclick="openGame('slots')">🎰 Джекпот <span>›</span></div>
   </div>
 </div>
 
 <!-- ИГРЫ -->
+<div id="game-carrier" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Авианосец</h2></div>
+  <div class="carrier-area">
+    <div class="sea"></div>
+    <div class="multiplier" id="carrierMult">x1.0</div>
+    <div class="carrier-ship" id="carrierShip">🛳️</div>
+    <div class="plane-icon" id="carrierPlane">✈️</div>
+  </div>
+  <div class="bet-input"><input type="text" id="betCarrier" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
+  <button class="btn" onclick="startCarrier()" id="btnStartCarrier">Взлет</button>
+  <button class="btn vip" onclick="landCarrier()" id="btnLandCarrier" style="display: none;">Приземлиться</button>
+  <div class="result-text" id="resCarrier"></div>
+</div>
+
 <div id="game-roulette" class="game-screen">
   <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Рулетка</h2></div>
   <div style="text-align:center; font-size:80px; margin:20px 0;">🎯</div>
@@ -304,70 +263,6 @@
   <div class="result-text" id="resMines"></div>
 </div>
 
-<div id="game-dice" class="game-screen">
-  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Кости</h2></div>
-  <div style="font-size: 60px; text-align:center; margin: 20px 0;">🎲 🎲</div>
-  <div class="bet-input"><input type="text" id="betDice" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
-  <div style="display: flex; gap: 10px;">
-    <button class="btn" onclick="playDice('less')" style="flex: 1;">Меньше 7</button>
-    <button class="btn" onclick="playDice('more')" style="flex: 1;">Больше 7</button>
-  </div>
-  <div class="result-text" id="resDice"></div>
-</div>
-
-<div id="game-coin" class="game-screen">
-  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Орёл или Решка</h2></div>
-  <div style="font-size: 60px; text-align:center; margin: 20px 0;" id="coinDisplay">🪙</div>
-  <div class="bet-input"><input type="text" id="betCoin" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
-  <div style="display: flex; gap: 10px;">
-    <button class="btn" onclick="playCoin('heads')" style="flex: 1;">Орёл</button>
-    <button class="btn" onclick="playCoin('tails')" style="flex: 1;">Решка</button>
-  </div>
-  <div class="result-text" id="resCoin"></div>
-</div>
-
-<div id="game-slots" class="game-screen">
-  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Джекпот</h2></div>
-  <div class="slots-container" id="slotsDisplay">
-    <div class="slot">🍒</div><div class="slot">🍋</div><div class="slot">⭐</div>
-  </div>
-  <div class="bet-input"><input type="text" id="betSlots" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
-  <button class="btn" onclick="playSlots()">Крутить</button>
-  <div class="result-text" id="resSlots"></div>
-</div>
-
-<div id="game-guess" class="game-screen">
-  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Угадай число</h2></div>
-  <div style="font-size: 60px; text-align: center; margin: 20px 0;">🔢</div>
-  <div class="bet-input"><input type="text" id="betGuess" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
-  <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-    <button class="btn" onclick="playGuess(1)" style="width: 18%; flex: none; padding: 10px;">1</button>
-    <button class="btn" onclick="playGuess(2)" style="width: 18%; flex: none; padding: 10px;">2</button>
-    <button class="btn" onclick="playGuess(3)" style="width: 18%; flex: none; padding: 10px;">3</button>
-    <button class="btn" onclick="playGuess(4)" style="width: 18%; flex: none; padding: 10px;">4</button>
-    <button class="btn" onclick="playGuess(5)" style="width: 18%; flex: none; padding: 10px;">5</button>
-    <button class="btn" onclick="playGuess(6)" style="width: 18%; flex: none; padding: 10px;">6</button>
-    <button class="btn" onclick="playGuess(7)" style="width: 18%; flex: none; padding: 10px;">7</button>
-    <button class="btn" onclick="playGuess(8)" style="width: 18%; flex: none; padding: 10px;">8</button>
-    <button class="btn" onclick="playGuess(9)" style="width: 18%; flex: none; padding: 10px;">9</button>
-    <button class="btn" onclick="playGuess(10)" style="width: 18%; flex: none; padding: 10px;">10</button>
-  </div>
-  <div class="result-text" id="resGuess"></div>
-</div>
-
-<div id="game-crash" class="game-screen">
-  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Краш</h2></div>
-  <div class="crash-area">
-    <div class="plane" id="plane">✈️</div>
-    <div class="crash-line" id="crashLine"></div>
-    <div style="position: absolute; top: 10px; right: 10px; font-size: 30px; font-weight: 800; color: var(--accent2);" id="crashMultiplier">1.00x</div>
-  </div>
-  <div class="bet-input"><input type="text" id="betCrash" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
-  <button class="btn" onclick="startCrash()" id="btnStartCrash">Начать</button>
-  <button class="btn vip" onclick="cashoutCrash()" id="btnCashoutCrash" style="display: none;">Забрать</button>
-  <div class="result-text" id="resCrash"></div>
-</div>
-
 <div id="game-cups" class="game-screen">
   <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Стаканчики</h2></div>
   <p style="text-align: center; color: var(--hint);">Найди шарик под стаканом!</p>
@@ -381,19 +276,14 @@
   <div class="result-text" id="resCups"></div>
 </div>
 
-<div id="screen-dox" class="screen">
-  <h2>Снос аккаунта</h2>
-  <div class="tariff-card" id="doxInputCard">
-    <p style="color: var(--hint); font-size: 14px;">Введите юзернейм.</p>
-    <input type="text" id="targetUser" placeholder="@username" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text); margin-bottom: 15px;">
-    <button class="btn" onclick="startDox()" id="startDoxBtn">Начать снос</button>
+<div id="game-slots" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Джекпот</h2></div>
+  <div class="slots-container" id="slotsDisplay">
+    <div class="slot">🍒</div><div class="slot">🍋</div><div class="slot">⭐</div>
   </div>
-  <div class="tariff-card" id="doxProgressCard" style="display: none;">
-    <h3 id="doxStatus">Обработка...</h3>
-    <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; margin: 15px 0;"><div id="doxProgress" style="height: 100%; background: var(--accent); width: 0%; border-radius: 3px; transition: 0.4s;"></div></div>
-    <div id="doxPercent" style="text-align: right; font-weight: 700; color: var(--accent);">0%</div>
-    <div id="doxFiles" style="display: none; margin-top: 15px; font-family: monospace; font-size: 12px; color: #10b981; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; max-height: 250px; overflow-y: auto; white-space: pre-wrap;"></div>
-  </div>
+  <div class="bet-input"><input type="text" id="betSlots" placeholder="Ставка" value="10" style="width:100%; border:none; background:transparent; color:var(--text); outline:none;"></div>
+  <button class="btn" onclick="playSlots()">Крутить</button>
+  <div class="result-text" id="resSlots"></div>
 </div>
 
 <div id="screen-profile" class="screen">
@@ -410,14 +300,6 @@
     </div>
   </div>
   <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/aegis_pro_official')">💬 Поддержка</button>
-  
-  <!-- ПАНЕЛЬ АДМИНА СКРЫТА -->
-  <div id="adminPanel" style="display: none; margin-top: 20px; background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #fbbf24;">
-    <h3 style="margin: 0 0 10px 0; color: #fbbf24;">👑 Панель Админа</h3>
-    <input type="text" id="secretCode" placeholder="Секретный код" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text); margin-bottom: 10px;">
-    <button class="btn admin" onclick="checkSecret()">Активировать</button>
-  </div>
-
   <div style="font-size: 10px; color: var(--hint); text-align: center; margin-top: 20px;">
     Отказ от ответственности: Данное приложение предоставляется в демонстрационных целях.
   </div>
@@ -425,24 +307,16 @@
 
 <div id="screen-settings" class="screen">
   <h2>Настройки темы</h2>
-  <div class="theme-option" onclick="setTheme('light')">
-    <span>☀️ Светлая</span><div class="theme-preview" style="background: #f2f2f7;"></div>
-  </div>
-  <div class="theme-option" onclick="setTheme('dark')">
-    <span>🌙 Тёмная</span><div class="theme-preview" style="background: #0a0a0f;"></div>
-  </div>
-  <div class="theme-option" onclick="setTheme('purple')">
-    <span>💜 Фиолетовая</span><div class="theme-preview" style="background: #7c3aed;"></div>
-  </div>
+  <div class="theme-option" onclick="setTheme('light')"><span>☀️ Светлая</span><div class="theme-preview" style="background: #f2f2f7;"></div></div>
+  <div class="theme-option" onclick="setTheme('dark')"><span>🌙 Тёмная</span><div class="theme-preview" style="background: #0a0a0f;"></div></div>
+  <div class="theme-option" onclick="setTheme('purple')"><span>💜 Фиолетовая</span><div class="theme-preview" style="background: #7c3aed;"></div></div>
   <button class="btn secondary" onclick="switchTab('screen-home', document.querySelectorAll('.nav-item')[0])" style="margin-top: 20px;">🔙 Назад</button>
 </div>
 
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('screen-home', this)"><div class="nav-icon">🏠</div>Главная</div>
-  <div class="nav-item" onclick="switchTab('screen-services', this)"><div class="nav-icon">📱</div>Сервисы</div>
-  <div class="nav-item" onclick="switchTab('screen-reviews', this)"><div class="nav-icon">⭐</div>Отзывы</div>
+  <div class="nav-item" onclick="switchTab('screen-cases', this)"><div class="nav-icon">🎁</div>Кейсы</div>
   <div class="nav-item" onclick="switchTab('screen-games', this)"><div class="nav-icon">🎰</div>Игры</div>
-  <div class="nav-item" onclick="switchTab('screen-tariffs', this)"><div class="nav-icon">💎</div>Тарифы</div>
   <div class="nav-item" onclick="switchTab('screen-profile', this)"><div class="nav-icon">👤</div>Профиль</div>
 </div>
 
@@ -456,8 +330,7 @@ document.getElementById('userTag').innerText = u.username ? '@' + u.username : '
 document.getElementById('userId').innerText = u.id;
 
 let db = JSON.parse(localStorage.getItem('agram_db')) || {};
-if (!db[u.id]) db[u.id] = { sub: 'FREE', stars: 100, theme: 'dark' };
-document.getElementById('userSub').innerText = db[u.id].sub;
+if (!db[u.id]) db[u.id] = { stars: 100, theme: 'dark' };
 document.getElementById('headerBalance').innerText = db[u.id].stars;
 
 if (db[u.id].theme === 'light') document.body.classList.add('light-theme');
@@ -481,14 +354,69 @@ function switchTab(screenId, navElement) { document.querySelectorAll('.screen').
 function openGame(gameId) { document.getElementById('game-' + gameId).classList.add('active'); }
 function closeGame() { document.querySelectorAll('.game-screen').forEach(g => g.classList.remove('active')); }
 
-// Админ
-function checkSecret() {
-  const code = document.getElementById('secretCode').value.trim();
-  if (code === 'admin') {
-    db[u.id].sub = 'ADMIN'; db[u.id].stars = 999999; updateBalanceUI(); document.getElementById('userSub').innerText = 'ADMIN';
-    document.getElementById('adminTariffCard').style.display = 'block';
-    tg.showAlert('Админка активирована!');
-  } else { tg.showAlert('Неверный код'); }
+// Авианосец
+let carrierActive = false, carrierInt, carrierBet = 0, carrierMultVal = 1.0;
+function startCarrier() {
+  if (carrierActive) return;
+  const bet = parseInt(document.getElementById('betCarrier').value);
+  if (isNaN(bet) || bet <= 0 || bet > db[u.id].stars) { tg.showAlert('Неверная ставка'); return; }
+  
+  db[u.id].stars -= bet; updateBalanceUI();
+  carrierActive = true; carrierBet = bet; carrierMultVal = 1.0;
+  document.getElementById('btnStartCarrier').style.display = 'none'; document.getElementById('btnLandCarrier').style.display = 'block';
+  document.getElementById('resCarrier').innerText = '';
+  
+  const plane = document.getElementById('carrierPlane'); const ship = document.getElementById('carrierShip'); const mult = document.getElementById('carrierMult');
+  plane.style.left = '20px'; plane.style.bottom = '40px'; ship.style.right = '-100px'; ship.innerText = '🛳️'; plane.innerText = '✈️';
+  
+  carrierInt = setInterval(() => {
+    carrierMultVal += 0.1;
+    mult.innerText = `x${carrierMultVal.toFixed(1)}`;
+    
+    // Самолет летит вправо и вверх
+    let left = parseFloat(plane.style.left) || 20;
+    let bottom = parseFloat(plane.style.bottom) || 40;
+    plane.style.left = (left + 2) + 'px';
+    plane.style.bottom = (bottom + 1) + 'px';
+    
+    // Авианосец появляется случайно
+    if (carrierMultVal > 1.5 && ship.style.right === '-100px' && Math.random() < 0.05) {
+      ship.style.right = Math.floor(Math.random() * 150 + 50) + 'px'; // Позиция корабля
+    }
+    
+    // Если самолет улетел за экран
+    if (parseFloat(plane.style.left) > 320) {
+      clearInterval(carrierInt); carrierActive = false;
+      document.getElementById('btnStartCarrier').style.display = 'block'; document.getElementById('btnLandCarrier').style.display = 'none';
+      document.getElementById('resCarrier').innerText = `Самолет упал в море! Проигрыш -${carrierBet} ⭐`;
+      document.getElementById('resCarrier').style.color = '#ef4444';
+    }
+  }, 100);
+}
+
+function landCarrier() {
+  if (!carrierActive) return;
+  clearInterval(carrierInt);
+  carrierActive = false;
+  
+  const plane = document.getElementById('carrierPlane'); const ship = document.getElementById('carrierShip');
+  const planeLeft = parseFloat(plane.style.left);
+  const shipRight = parseFloat(ship.style.right);
+  
+  // Проверка, попал ли самолет на корабль (если корабль виден и самолет над ним)
+  if (shipRight !== -100 && planeLeft >= (320 - shipRight - 60) && planeLeft <= (320 - shipRight)) {
+    const win = Math.floor(carrierBet * carrierMultVal);
+    db[u.id].stars += win; updateBalanceUI();
+    plane.innerText = '🛬'; ship.innerText = '🛳️✅';
+    document.getElementById('resCarrier').innerText = `Успешная посадка! Выигрыш +${win} ⭐`;
+    document.getElementById('resCarrier').style.color = '#10b981';
+  } else {
+    plane.innerText = '💥';
+    document.getElementById('resCarrier').innerText = `Вы промахнулись мимо полосы! Проигрыш -${carrierBet} ⭐`;
+    document.getElementById('resCarrier').style.color = '#ef4444';
+  }
+  
+  document.getElementById('btnStartCarrier').style.display = 'block'; document.getElementById('btnLandCarrier').style.display = 'none';
 }
 
 // Рулетка
@@ -506,6 +434,7 @@ function spinRoulette() {
 // Мины
 let minesActive = false, minesBet = 0, minesMines = [], minesMult = 1;
 function startMines() {
+  if (minesActive) return;
   const bet = parseInt(document.getElementById('betMines').value);
   if (isNaN(bet) || bet > db[u.id].stars) return;
   db[u.id].stars -= bet; updateBalanceUI();
@@ -530,44 +459,10 @@ function cashoutMines() {
   document.getElementById('resMines').innerText = `Забрано +${win} ⭐`;
 }
 
-// Краш
-let crashActive = false, crashInt;
-function startCrash() {
-  const bet = parseInt(document.getElementById('betCrash').value);
-  if (isNaN(bet) || bet > db[u.id].stars) return;
-  db[u.id].stars -= bet; updateBalanceUI();
-  crashActive = true; let mult = 1.0; let x = 20; let y = 20;
-  document.getElementById('btnStartCrash').style.display = 'none'; document.getElementById('btnCashoutCrash').style.display = 'block';
-  const plane = document.getElementById('plane'); const line = document.getElementById('crashLine');
-  plane.style.left = '20px'; plane.style.bottom = '20px'; line.style.width = '0px'; line.style.transform = 'rotate(0deg)';
-  
-  crashInt = setInterval(() => {
-    mult += 0.05; x += 3; y += 1.5;
-    document.getElementById('crashMultiplier').innerText = mult.toFixed(2) + 'x';
-    plane.style.left = x + 'px'; plane.style.bottom = y + 'px';
-    line.style.width = Math.sqrt(Math.pow(x-20, 2) + Math.pow(y-20, 2)) + 'px';
-    line.style.transform = `rotate(${-Math.atan2(y-20, x-20) * 180 / Math.PI}deg)`;
-    
-    if (Math.random() < 0.03 || x > 300) {
-      clearInterval(crashInt); crashActive = false;
-      plane.innerText = '💥'; document.getElementById('btnStartCrash').style.display = 'block'; document.getElementById('btnCashoutCrash').style.display = 'none';
-      document.getElementById('resCrash').innerText = `Краш на ${mult.toFixed(2)}x. Проигрыш -${bet} ⭐`;
-    }
-  }, 100);
-}
-function cashoutCrash() {
-  if (!crashActive) return;
-  clearInterval(crashInt); crashActive = false;
-  const bet = parseInt(document.getElementById('betCrash').value);
-  const mult = parseFloat(document.getElementById('crashMultiplier').innerText);
-  const win = Math.floor(bet * mult); db[u.id].stars += win; updateBalanceUI();
-  document.getElementById('btnStartCrash').style.display = 'block'; document.getElementById('btnCashoutCrash').style.display = 'none';
-  document.getElementById('resCrash').innerText = `Забрано +${win} ⭐`;
-}
-
 // Стаканчики
 let cupsActive = false, ballCup = -1;
 function startCups() {
+  if (cupsActive) return;
   const bet = parseInt(document.getElementById('betCups').value);
   if (isNaN(bet) || bet > db[u.id].stars) return;
   db[u.id].stars -= bet; updateBalanceUI(); cupsActive = true; ballCup = Math.floor(Math.random() * 3);
@@ -591,20 +486,24 @@ function pickCup(index) {
   else { cups[index].innerText = '❌'; cups[ballCup].innerText = '⚪'; document.getElementById('resCups').innerText = `Проигрыш -${bet} ⭐`; }
 }
 
-// Снос
-function startDox() {
-  const target = document.getElementById('targetUser').value.trim();
-  if (!target) return;
-  document.getElementById('doxInputCard').style.display = 'none'; document.getElementById('doxProgressCard').style.display = 'block';
-  let p = 0; const int = setInterval(() => {
-    p += 10; document.getElementById('doxProgress').style.width = p + '%'; document.getElementById('doxPercent').innerText = p + '%';
-    if (p >= 100) {
-      clearInterval(int); document.getElementById('doxStatus').innerText = '✅ Готово';
-      let text = ''; for (let i=1; i<=100; i++) text += `Жалоба #${i} отправлена\n`;
-      document.getElementById('doxFiles').innerText = text; document.getElementById('doxFiles').style.display = 'block';
+// Слоты
+function playSlots() {
+  const bet = parseInt(document.getElementById('betSlots').value);
+  if (isNaN(bet) || bet > db[u.id].stars) return;
+  db[u.id].stars -= bet; updateBalanceUI();
+  const items = ['🍒', '🍋', '⭐', '💎', '7️⃣']; const slots = document.querySelectorAll('.slot'); let count = 0;
+  const interval = setInterval(() => {
+    slots.forEach(s => s.innerText = items[Math.floor(Math.random() * items.length)]); count++;
+    if (count > 10) {
+      clearInterval(interval);
+      const f1 = items[Math.floor(Math.random() * items.length)], f2 = items[Math.floor(Math.random() * items.length)], f3 = items[Math.floor(Math.random() * items.length)];
+      slots[0].innerText = f1; slots[1].innerText = f2; slots[2].innerText = f3;
+      if (f1 === f2 && f2 === f3) { db[u.id].stars += bet * 5; updateBalanceUI(); document.getElementById('resSlots').innerText = `ДЖЕКПОТ! +${bet * 5} ⭐`; }
+      else { document.getElementById('resSlots').innerText = `Проигрыш ${bet} ⭐`; }
     }
-  }, 300);
+  }, 100);
 }
 </script>
 </body>
-</ht
+</html>
+
