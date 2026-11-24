@@ -1,371 +1,164 @@
-
 <!DOCTYPE html>
 <html lang="ru" data-theme="cyber">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>NEXUS ARENA</title>
-<style>
-:root[data-theme="cyber"]{--bg:#090b14;--card:#121629;--elev:#1a203c;--acc:#00f5d4;--txt:#f8fafc;--mut:#94a3b8;--brd:#232b4d}
-:root[data-theme="gold"]{--bg:#0c0b09;--card:#171511;--elev:#242019;--acc:#f5b727;--txt:#fffbeb;--mut:#a8a29e;--brd:#332d22}
-:root[data-theme="crimson"]{--bg:#0f070a;--card:#1c0d13;--elev:#2b141d;--acc:#ff3b6b;--txt:#fff1f2;--mut:#fda4af;--brd:#421c2b}
-body{background:var(--bg);color:var(--txt);font-family:sans-serif;padding-bottom:80px;margin:0}
-.bg-card{background:var(--card);border:1px solid var(--brd)}
-.bg-elev{background:var(--elev)}
-.text-acc{color:var(--acc)}
-.text-mut{color:var(--mut)}
-.brd{border-color:var(--brd)}
-.btn-acc{background:var(--acc);color:#090b14;font-weight:700}
-.btn-gh{background:var(--elev);border:1px solid var(--brd);color:var(--txt)}
-.pay-act{border-color:var(--acc)!important;color:var(--acc)!important}
-.case-track{display:flex;gap:10px;transition:transform 3s cubic-bezier(.12,.85,.2,1)}
-</style>
+<script src="https://telegram.org"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="sticky top-0 z-40 border-b brd px-4 py-3 flex items-center justify-between" style="background:var(--bg)">
-  <div class="flex items-center gap-2">
-    <div class="w-8 h-8 rounded-lg flex items-center justify-center btn-acc">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
-    </div>
+
+<div class="hdr">
+  <div class="row">
+    <div class="logo">N</div>
     <div>
-      <div class="font-bold text-xs tracking-wider">NEXUS ARENA</div>
-      <div id="u-id" class="text-[10px] text-mut">ID: 849201</div>
+      <div class="brand">NEXUS ARENA</div>
+      <div id="uid" class="uid">ID: 849201</div>
     </div>
   </div>
-  <div class="flex items-center gap-2">
-    <div class="bg-card px-3 py-1 rounded-lg flex items-center gap-1.5 text-xs font-bold">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-acc"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-      <span id="bal">100.00</span> <span class="text-mut">RUB</span>
-    </div>
-    <button onclick="tab('dep')" class="btn-acc p-1.5 rounded-lg">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-    </button>
+  <div class="row">
+    <div class="pill"><span id="bal">100.00</span> <span class="cur">RUB</span></div>
+    <button onclick="tab('dep')" class="plus">+</button>
   </div>
 </div>
 
-<div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-xl bg-card shadow-xl text-xs font-bold text-acc"></div>
+<div id="tst" class="tst hid"></div>
 
-<div class="max-w-lg mx-auto px-4 pt-4">
-  <div id="t-games" class="space-y-3">
-    <div class="bg-card rounded-xl p-3.5 flex justify-between items-center">
+<div class="wrap">
+  <div id="t-games">
+    <div class="card ban row">
       <div>
-        <div class="text-[10px] font-bold text-acc uppercase">10 ИГР БЕЗ РЕЙСА И АВИА</div>
-        <div class="font-bold text-sm mt-0.5">Игровой зал</div>
+        <div class="tag">10 РЕЖИМОВ ОНЛАЙН</div>
+        <div class="ttl">Игровой зал</div>
+        <div class="sub">Мгновенные выплаты и кэшбэк 10%</div>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-acc"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
+      <div class="gic">10</div>
     </div>
-    <div id="games-grid" class="grid grid-cols-2 gap-2.5"></div>
+    <div id="gg" class="g2"></div>
   </div>
 
-  <div id="t-play" class="hidden space-y-3">
-    <div class="flex justify-between items-center">
-      <button onclick="tab('games')" class="btn-gh px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-        Назад
-      </button>
-      <div id="g-title" class="font-bold text-xs text-acc uppercase"></div>
+  <div id="t-play" class="hid">
+    <div class="row mb12">
+      <button onclick="tab('games')" class="gh">← Назад</button>
+      <div id="gt" class="gtitle"></div>
     </div>
-    <div id="g-stage" class="bg-card rounded-xl p-4"></div>
-    <div class="bg-card rounded-xl p-3 space-y-2">
-      <div class="flex justify-between text-[11px] text-mut">
-        <span>Ставка (RUB)</span>
-        <button onclick="setBet(Math.floor(S.bal))" class="text-acc">Макс</button>
+    <div id="gs" class="card"></div>
+    <div class="card">
+      <div class="row mb8 lbl">
+        <span>Размер ставки (RUB)</span>
+        <span onclick="sbet(Math.floor(S.bal))" class="link">Максимум</span>
       </div>
-      <div class="flex gap-2">
-        <input id="bet" type="number" value="10" min="1" class="w-full bg-elev border brd rounded-lg px-3 py-2 font-bold text-sm" />
-        <button onclick="setBet(Math.max(1,Math.floor(val('bet')/2)))" class="btn-gh px-3 rounded-lg text-xs font-bold">1/2</button>
-        <button onclick="setBet(Math.floor(val('bet')*2))" class="btn-gh px-3 rounded-lg text-xs font-bold">x2</button>
+      <div class="row mb8">
+        <input id="bet" type="number" value="10" min="1" class="inp">
+        <button onclick="sbet(Math.max(1,Math.floor(val('bet')/2)))" class="gh">1/2</button>
+        <button onclick="sbet(Math.floor(val('bet')*2))" class="gh">x2</button>
       </div>
-      <div class="grid grid-cols-4 gap-1.5">
-        <button onclick="setBet(10)" class="btn-gh py-1 rounded text-xs">10</button>
-        <button onclick="setBet(50)" class="btn-gh py-1 rounded text-xs">50</button>
-        <button onclick="setBet(250)" class="btn-gh py-1 rounded text-xs">250</button>
-        <button onclick="setBet(1000)" class="btn-gh py-1 rounded text-xs">1000</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="t-cases" class="hidden space-y-3">
-    <div id="c-spin-box" class="hidden bg-card rounded-xl p-3 space-y-2">
-      <div class="text-xs font-bold text-acc">ОТКРЫТИЕ КЕЙСА...</div>
-      <div class="relative overflow-hidden rounded-lg border brd bg-elev h-20 flex items-center">
-        <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-red-500 z-20"></div>
-        <div id="c-track" class="case-track px-3"></div>
-      </div>
-    </div>
-    <div id="cases-list" class="space-y-2.5"></div>
-  </div>
-
-  <div id="t-bonus" class="hidden space-y-3">
-    <div class="bg-card rounded-xl p-4 space-y-3">
-      <div class="flex justify-between items-center">
-        <div>
-          <div class="font-bold text-sm">Кэшбэк 10%</div>
-          <div class="text-xs text-mut">Возврат с проигранных ставок</div>
-        </div>
-        <div class="text-right font-bold text-acc"><span id="cb-val">0.00</span> RUB</div>
-      </div>
-      <button onclick="claimCB()" class="w-full btn-acc py-2.5 rounded-lg text-xs uppercase">Забрать кэшбэк</button>
-    </div>
-    <div class="bg-card rounded-xl p-4 space-y-3">
-      <div class="font-bold text-sm">Ежедневный бонус (+150 RUB)</div>
-      <button onclick="claimDaily()" class="w-full btn-gh py-2.5 rounded-lg text-xs font-bold uppercase">Получить бонус</button>
-    </div>
-    <div class="bg-card rounded-xl p-4 space-y-2">
-      <div class="font-bold text-sm">Промокод (START2026)</div>
-      <div class="flex gap-2">
-        <input id="promo" type="text" placeholder="Код" class="w-full bg-elev border brd rounded-lg px-3 py-2 text-xs uppercase" />
-        <button onclick="usePromo()" class="btn-acc px-4 rounded-lg text-xs">ОК</button>
+      <div class="g4">
+        <button onclick="sbet(10)" class="gh">10</button>
+        <button onclick="sbet(50)" class="gh">50</button>
+        <button onclick="sbet(250)" class="gh">250</button>
+        <button onclick="sbet(1000)" class="gh">1000</button>
       </div>
     </div>
   </div>
 
-  <div id="t-dep" class="hidden space-y-3">
-    <div class="bg-card rounded-xl p-4 space-y-3">
-      <div class="flex justify-between items-center">
-        <div class="font-bold text-sm">Пополнение баланса</div>
-        <span class="text-xs text-acc font-bold">От 50 RUB</span>
-      </div>
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="selPay('sbp',this)" class="pm btn-gh py-2.5 rounded-lg text-xs font-bold pay-act">СБП / Карты</button>
-        <button onclick="selPay('cb',this)" class="pm btn-gh py-2.5 rounded-lg text-xs font-bold">CryptoBot</button>
-        <button onclick="selPay('ton',this)" class="pm btn-gh py-2.5 rounded-lg text-xs font-bold">TON / USD</button>
-      </div>
-      <div class="space-y-1">
-        <div class="flex justify-between text-xs text-mut">
-          <span>Сумма в рублях (мин. 50)</span>
-          <span id="pay-prev" class="text-acc font-bold">50.00 RUB</span>
-        </div>
-        <input id="dep-sum" type="number" value="50" min="50" oninput="updPrev()" class="w-full bg-elev border brd rounded-lg px-3 py-2.5 font-bold text-sm" />
-      </div>
-      <div class="grid grid-cols-5 gap-1.5">
-        <button onclick="setDep(50)" class="btn-gh py-1.5 rounded text-xs font-bold">50</button>
-        <button onclick="setDep(100)" class="btn-gh py-1.5 rounded text-xs font-bold">100</button>
-        <button onclick="setDep(500)" class="btn-gh py-1.5 rounded text-xs font-bold">500</button>
-        <button onclick="setDep(1000)" class="btn-gh py-1.5 rounded text-xs font-bold">1000</button>
-        <button onclick="setDep(5000)" class="btn-gh py-1.5 rounded text-xs font-bold">5000</button>
-      </div>
-      <button onclick="makeInv()" class="w-full btn-acc py-3 rounded-lg text-xs uppercase">Перейти к оплате</button>
+  <div id="t-cases" class="hid">
+    <div id="csb" class="card hid">
+      <div class="tag">ОТКРЫТИЕ КЕЙСА...</div>
+      <div class="cw"><div class="cl"></div><div id="ct" class="ct"></div></div>
     </div>
-    <div id="inv-box" class="hidden bg-card rounded-xl p-4 space-y-2.5">
-      <div class="flex justify-between text-xs font-bold border-b brd pb-2">
-        <span id="inv-m" class="text-acc">СБП / Карты</span>
-        <span id="inv-tot">50.00 RUB</span>
+    <div id="cl"></div>
+  </div>
+
+  <div id="t-bonus" class="hid">
+    <div class="card">
+      <div class="row mb12">
+        <div><div class="ttl">Кэшбэк 10%</div><div class="sub">Возврат с проигранных ставок</div></div>
+        <div class="cbnum"><span id="cbv">0.00</span> RUB</div>
       </div>
-      <div class="bg-elev p-2.5 rounded-lg flex justify-between items-center text-xs">
-        <span id="inv-req" class="truncate pr-2">+7 (999) 842-19-30 (СБП)</span>
-        <button onclick="copyReq()" class="text-acc font-bold shrink-0">Копия</button>
+      <button onclick="ccb()" class="btn acc">Перевести на баланс</button>
+    </div>
+    <div class="card">
+      <div class="ttl">Ежедневный бонус</div>
+      <div class="sub mb12">Бесплатные 150.00 RUB каждые 24 часа</div>
+      <button onclick="cdly()" class="btn gh">Забрать 150 RUB</button>
+    </div>
+    <div class="card">
+      <div class="ttl mb8">Промокод (START2026)</div>
+      <div class="row">
+        <input id="prm" type="text" placeholder="Введите код" class="inp up">
+        <button onclick="uprm()" class="acc okbtn">ОК</button>
       </div>
-      <button onclick="confInv()" class="w-full btn-acc py-2.5 rounded-lg text-xs uppercase">Я оплатил — зачислить</button>
     </div>
   </div>
 
-  <div id="t-prof" class="hidden space-y-3">
-    <div class="bg-card rounded-xl p-4 flex justify-between items-center">
+  <div id="t-dep" class="hid">
+    <div class="card">
+      <div class="row mb12">
+        <div class="ttl">Пополнение баланса</div>
+        <span class="tag">От 50 RUB</span>
+      </div>
+      <div class="g3 mb12">
+        <button onclick="spay('sbp',this)" class="pm gh pact">СБП / Карты</button>
+        <button onclick="spay('cb',this)" class="pm gh">CryptoBot</button>
+        <button onclick="spay('ton',this)" class="pm gh">TON / USD</button>
+      </div>
+      <div class="row mb8 lbl">
+        <span>Сумма в рублях (мин. 50)</span>
+        <span id="pp" class="link">50.00 RUB</span>
+      </div>
+      <input id="ds" type="number" value="50" min="50" oninput="uprev()" class="inp mb8">
+      <div class="g5 mb12">
+        <button onclick="sdep(50)" class="gh">50</button>
+        <button onclick="sdep(100)" class="gh">100</button>
+        <button onclick="sdep(500)" class="gh">500</button>
+        <button onclick="sdep(1000)" class="gh">1000</button>
+        <button onclick="sdep(5000)" class="gh">5000</button>
+      </div>
+      <button onclick="minv()" class="btn acc">Перейти к оплате</button>
+    </div>
+
+    <div id="ib" class="card hid">
+      <div class="row invtop">
+        <span id="im" class="link">СБП / Карты</span>
+        <span id="it">50.00 RUB</span>
+      </div>
+      <div class="row reqbox">
+        <span id="ir" class="reqtxt">+7 (999) 842-19-30 (СБП)</span>
+        <span onclick="creq()" class="link">Копия</span>
+      </div>
+      <button onclick="cinv()" class="btn acc">Я оплатил — зачислить</button>
+    </div>
+  </div>
+
+  <div id="t-prof" class="hid">
+    <div class="card row">
       <div>
-        <div id="p-name" class="font-bold text-sm">Игрок</div>
-        <div class="text-xs text-mut">Игр: <span id="st-g">0</span> | Выиграно: <span id="st-w" class="text-acc">0</span> RUB</div>
+        <div id="pn" class="ttl">Игрок</div>
+        <div class="sub">Игр: <span id="sg">0</span> | Выиграно: <span id="sw" class="link">0</span> RUB</div>
       </div>
-      <span class="text-xs font-bold text-acc bg-elev px-2 py-1 rounded">VIP</span>
+      <span class="vip">VIP</span>
     </div>
-    <div class="bg-card rounded-xl p-4 space-y-2">
-      <div class="font-bold text-xs uppercase text-mut">Тема оформления</div>
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="setTheme('cyber')" class="btn-gh py-2.5 rounded-lg text-xs font-bold" style="color:#00f5d4">Cyber Neon</button>
-        <button onclick="setTheme('gold')" class="btn-gh py-2.5 rounded-lg text-xs font-bold" style="color:#f5b727">Royal Gold</button>
-        <button onclick="setTheme('crimson')" class="btn-gh py-2.5 rounded-lg text-xs font-bold" style="color:#ff3b6b">Crimson</button>
+    <div class="card">
+      <div class="tag mb8">ТЕМА ОФОРМЛЕНИЯ</div>
+      <div class="g3">
+        <button onclick="sthm('cyber')" class="gh c-cyb">Cyber Neon</button>
+        <button onclick="sthm('gold')" class="gh c-gld">Royal Gold</button>
+        <button onclick="sthm('crimson')" class="gh c-crm">Crimson</button>
       </div>
     </div>
-    <button onclick="resetAll()" class="w-full btn-gh py-2.5 rounded-xl text-xs text-red-400 font-bold">Сбросить прогресс</button>
+    <button onclick="rall()" class="btn gh c-red">Сбросить прогресс</button>
   </div>
 </div>
 
-<div class="fixed bottom-0 left-0 right-0 z-40 border-t brd py-2 px-2" style="background:var(--card)">
-  <div class="flex justify-around max-w-lg mx-auto">
-    <button data-n="games" onclick="tab('games')" class="nb flex flex-col items-center gap-0.5 text-xs text-acc font-bold"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>Игры</button>
-    <button data-n="cases" onclick="tab('cases')" class="nb flex flex-col items-center gap-0.5 text-xs text-mut font-bold"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>Кейсы</button>
-    <button data-n="bonus" onclick="tab('bonus')" class="nb flex flex-col items-center gap-0.5 text-xs text-mut font-bold"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/></svg>Бонусы</button>
-    <button data-n="prof" onclick="tab('prof')" class="nb flex flex-col items-center gap-0.5 text-xs text-mut font-bold"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><circle cx="12" cy="12" r="12"/><path d="M12 2a10 10 0 0 1 10 10H2a10 10 0 0 1 10-10z"/><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>Профиль</button>
-  </div>
+<div class="nav">
+  <button onclick="tab('games')" data-n="games" class="nb act">Игры</button>
+  <button onclick="tab('cases')" data-n="cases" class="nb">Кейсы</button>
+  <button onclick="tab('bonus')" data-n="bonus" class="nb">Бонусы</button>
+  <button onclick="tab('prof')" data-n="prof" class="nb">Профиль</button>
 </div>
 
-<script>
-const DEF = { bal: 100, cb: 0, g: 0, w: 0, th: 'cyber', daily: 0, promos: [] };
-let S = JSON.parse(localStorage.getItem('nx_s')) || { ...DEF };
-const save = () => { localStorage.setItem('nx_s', JSON.stringify(S)); upd(); };
-const val = id => parseFloat(document.getElementById(id).value) || 0;
-const setBet = v => document.getElementById('bet').value = v;
-
-function toast(m) {
-  const t = document.getElementById('toast');
-  t.textContent = m;
-  t.classList.remove('hidden');
-  clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.classList.add('hidden'), 2500);
-}
-
-function tab(n) {
-  ['games', 'play', 'cases', 'bonus', 'dep', 'prof'].forEach(x => document.getElementById('t-' + x).classList.add('hidden'));
-  document.getElementById('t-' + n).classList.remove('hidden');
-  document.querySelectorAll('.nb').forEach(b => {
-    b.classList.toggle('text-acc', b.dataset.n === n);
-    b.classList.toggle('text-mut', b.dataset.n !== n);
-  });
-  if (n === 'dep') updPrev();
-}
-
-function el(tag, cls, txt) {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (txt !== undefined) e.textContent = txt;
-  return e;
-}
-
-const GAMES = [
-  ['mines', 'Mines 5x5', 'x24', 'bomb'],
-  ['dice', 'Dice', 'x19', 'dices'],
-  ['wheel', 'Wheel', 'x10', 'disc'],
-  ['tower', 'Tower', 'x12', 'layers'],
-  ['coin', 'CoinFlip', 'x1.95', 'coins'],
-  ['hilo', 'Hi-Lo', 'x1.95', 'arrow-up-down'],
-  ['roul', 'Roulette', 'x14', 'circle-dot'],
-  ['slots', 'Slots 777', 'x25', 'cpu'],
-  ['keno', 'Keno', 'x15', 'grid'],
-  ['limbo', 'Limbo', 'x100', 'trending-up']
-];
-
-const gg = document.getElementById('games-grid');
-GAMES.forEach(g => {
-  const b = el('button', 'bg-card p-3 rounded-xl text-left flex justify-between items-center');
-  b.onclick = () => openG(g[0], g[1]);
-  const left = el('div');
-  left.append(el('div', 'font-bold text-sm', g[1]), el('div', 'text-[11px] text-acc font-bold', g[2]));
-  const right = el('div', 'w-9 h-9 rounded-lg bg-elev flex items-center justify-center text-acc');
-  const ic = el('i', 'w-4 h-4');
-  ic.setAttribute('data-lucide', g[3]);
-  right.appendChild(ic);
-  b.append(left, right);
-  gg.appendChild(b);
-});
-
-function getBet() {
-  const b = val('bet');
-  if (b < 1) { toast('Мин. ставка 1 RUB'); return 0; }
-  if (b > S.bal) { toast('Недостаточно средств'); return 0; }
-  return b;
-}
-
-function finish(b, win) {
-  S.bal = +(S.bal - b + win).toFixed(2);
-  S.g++;
-  if (win > 0) S.w += win;
-  else S.cb += b * 0.1;
-  save();
-}
-
-let M = {}, TW = {}, KN = [];
-
-function openG(id, name) {
-  document.getElementById('g-title').textContent = name;
-  tab('play');
-  const st = document.getElementById('g-stage');
-  st.replaceChildren();
-  if (id === 'mines') { M = { on: 0, b: [], o: [], bet: 0, m: 1 }; drawMines(st); }
-  if (id === 'dice') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'text-2xl font-bold text-acc', '--'); res.id = 'd-r';
-    const rng = el('input', 'w-full'); rng.id = 'd-s'; rng.type = 'range'; rng.min = 5; rng.max = 90; rng.value = 50;
-    const lbl = el('div', 'text-xs text-mut', '50%');
-    rng.oninput = () => lbl.textContent = rng.value + '%';
-    const btn = el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'БРОСИТЬ'); btn.onclick = playDice;
-    box.append(res, rng, lbl, btn); st.appendChild(box);
-  }
-  if (id === 'wheel') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'text-2xl font-bold text-acc py-4 bg-elev rounded-xl', 'x1.0'); res.id = 'w-r';
-    const btn = el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'КРУТИТЬ'); btn.onclick = playWheel;
-    box.append(res, btn); st.appendChild(box);
-  }
-  if (id === 'tower') { TW = { on: 0, l: 0, t: [], bet: 0, m: 1 }; drawTower(st); }
-  if (id === 'coin') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'py-4 bg-elev rounded-xl font-bold', 'ВЫБЕРИТЕ СТОРОНУ'); res.id = 'c-r';
-    const row = el('div', 'grid grid-cols-2 gap-2');
-    const b1 = el('button', 'btn-acc py-2.5 rounded-lg text-xs', 'ОРЕЛ x1.95'); b1.onclick = () => playCoin('ОРЕЛ');
-    const b2 = el('button', 'btn-gh py-2.5 rounded-lg text-xs font-bold', 'РЕШКА x1.95'); b2.onclick = () => playCoin('РЕШКА');
-    row.append(b1, b2); box.append(res, row); st.appendChild(box);
-  }
-  if (id === 'hilo') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'text-2xl font-bold text-acc py-3 bg-elev rounded-xl', '50'); res.id = 'h-r';
-    const row = el('div', 'grid grid-cols-2 gap-2');
-    const b1 = el('button', 'btn-gh py-2.5 rounded-lg text-xs font-bold', 'МЕНЬШЕ 50'); b1.onclick = () => playHilo(0);
-    const b2 = el('button', 'btn-acc py-2.5 rounded-lg text-xs', 'БОЛЬШЕ 50'); b2.onclick = () => playHilo(1);
-    row.append(b1, b2); box.append(res, row); st.appendChild(box);
-  }
-  if (id === 'roul') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'py-3 bg-elev rounded-xl font-bold', 'СЕКТОР'); res.id = 'r-r';
-    const row = el('div', 'grid grid-cols-3 gap-2');
-    const b1 = el('button', 'bg-red-600 py-2.5 rounded-lg text-xs font-bold', 'КРАСН x2'); b1.onclick = () => playRoul('r');
-    const b2 = el('button', 'bg-emerald-600 py-2.5 rounded-lg text-xs font-bold', 'ЗЕРО x14'); b2.onclick = () => playRoul('g');
-    const b3 = el('button', 'bg-zinc-800 py-2.5 rounded-lg text-xs font-bold', 'ЧЕРН x2'); b3.onclick = () => playRoul('b');
-    row.append(b1, b2, b3); box.append(res, row); st.appendChild(box);
-  }
-  if (id === 'slots') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'text-2xl font-bold text-acc py-4 bg-elev rounded-xl', '7 - 7 - 7'); res.id = 's-r';
-    const btn = el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'КРУТИТЬ'); btn.onclick = playSlots;
-    box.append(res, btn); st.appendChild(box);
-  }
-  if (id === 'keno') { KN = []; drawKeno(st); }
-  if (id === 'limbo') {
-    const box = el('div', 'space-y-3 text-center');
-    const res = el('div', 'text-2xl font-bold text-acc py-3 bg-elev rounded-xl', 'x1.00'); res.id = 'l-r';
-    const inp = el('input', 'w-full bg-elev border brd rounded-lg px-3 py-2 text-center font-bold'); inp.id = 'l-t'; inp.type = 'number'; inp.value = '2.0'; inp.step = '0.1';
-    const btn = el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'ИГРАТЬ'); btn.onclick = playLimbo;
-    box.append(res, inp, btn); st.appendChild(box);
-  }
-}
-
-function drawMines(st) {
-  st.replaceChildren();
-  const grid = el('div', 'grid grid-cols-5 gap-1.5 mb-3');
-  for (let i = 0; i < 25; i++) {
-    const op = M.o.includes(i), bm = !M.on && M.b.includes(i);
-    const btn = el('button', 'h-10 rounded-lg border brd font-bold text-xs ' + (op ? 'btn-acc' : (bm ? 'bg-red-600' : 'bg-elev')), op ? '+' : (bm ? 'X' : '?'));
-    btn.onclick = () => hitMine(i);
-    grid.appendChild(btn);
-  }
-  const act = M.on
-    ? el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'ЗАБРАТЬ ' + (M.bet * M.m).toFixed(2) + ' RUB')
-    : el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'СТАРТ (5 МИН)');
-  act.onclick = M.on ? cashMine : startMine;
-  st.append(grid, act);
-}
-function startMine() { const b = getBet(); if (!b) return; S.bal -= b; save(); const bombs = []; while (bombs.length < 5) { let r = Math.floor(Math.random() * 25); if (!bombs.includes(r)) bombs.push(r); } M = { on: 1, b: bombs, o: [], bet: b, m: 1 }; drawMines(document.getElementById('g-stage')); }
-function hitMine(i) { if (!M.on || M.o.includes(i)) return; if (M.b.includes(i)) { M.on = 0; S.cb += M.bet * 0.1; S.g++; save(); toast('Мина!'); drawMines(document.getElementById('g-stage')); return; } M.o.push(i); M.m = +(1 + M.o.length * 0.35).toFixed(2); drawMines(document.getElementById('g-stage')); }
-function cashMine() { if (!M.on || !M.o.length) return; const w = +(M.bet * M.m).toFixed(2); M.on = 0; S.bal += w; S.w += w; S.g++; save(); toast('+' + w + ' RUB'); drawMines(document.getElementById('g-stage')); }
-
-function playDice() { const b = getBet(); if (!b) return; const c = val('d-s'), r = +(Math.random() * 100).toFixed(2), w = r <= c ? +(b * (98 / c)).toFixed(2) : 0; document.getElementById('d-r').textContent = r; finish(b, w); toast(w ? '+' + w + ' RUB' : 'Мимо'); }
-function playWheel() { const b = getBet(); if (!b) return; const m = [0, 0.5, 1.2, 1.5, 2, 3, 5, 10][Math.floor(Math.random() * 8)], w = +(b * m).toFixed(2); document.getElementById('w-r').textContent = 'x' + m; finish(b, w); toast(w ? '+' + w + ' RUB' : 'x0'); }
-
-function drawTower(st) {
-  st.replaceChildren();
-  const wrap = el('div', 'space-y-1.5 mb-3');
-  for (let l = 4; l >= 0; l--) {
-    const row = el('div', 'grid grid-cols-3 gap-1.5');
-    for (let d = 0; d < 3; d++) {
-      const btn = el('button', 'py-2 rounded border brd text-xs ' + (l < TW.l ? 'btn-acc' : 'bg-elev'), 'Дверь ' + (d + 1));
-      btn.onclick = () => hitTow(l, d);
-      row.appendChild(btn);
-    }
-    wrap.appendChild(row);
-  }
-  const act = TW.on
-    ? el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'ЗАБРАТЬ ' + (TW.bet * TW.m).toFixed(2) + ' RUB')
-    : el('button', 'w-full btn-acc py-2.5 rounded-lg text-xs', 'СТАРТ БАШНИ');
-  act.onclick = TW.on ? cashTow : startTow;
-  st.append(wrap, act);
-}
-function startTow() { const b = getBet(); if (!b) return; S.bal -= b;
+<script src="app.js"></script>
+</body>
+</html>
