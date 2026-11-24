@@ -1,164 +1,64 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="cyber">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>NEXUS ARENA</title>
-<script src="https://telegram.org"></script>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div class="hdr">
-  <div class="row">
-    <div class="logo">N</div>
-    <div>
-      <div class="brand">NEXUS ARENA</div>
-      <div id="uid" class="uid">ID: 849201</div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="pill"><span id="bal">100.00</span> <span class="cur">RUB</span></div>
-    <button onclick="tab('dep')" class="plus">+</button>
-  </div>
-</div>
-
-<div id="tst" class="tst hid"></div>
-
-<div class="wrap">
-  <div id="t-games">
-    <div class="card ban row">
-      <div>
-        <div class="tag">10 РЕЖИМОВ ОНЛАЙН</div>
-        <div class="ttl">Игровой зал</div>
-        <div class="sub">Мгновенные выплаты и кэшбэк 10%</div>
-      </div>
-      <div class="gic">10</div>
-    </div>
-    <div id="gg" class="g2"></div>
-  </div>
-
-  <div id="t-play" class="hid">
-    <div class="row mb12">
-      <button onclick="tab('games')" class="gh">← Назад</button>
-      <div id="gt" class="gtitle"></div>
-    </div>
-    <div id="gs" class="card"></div>
-    <div class="card">
-      <div class="row mb8 lbl">
-        <span>Размер ставки (RUB)</span>
-        <span onclick="sbet(Math.floor(S.bal))" class="link">Максимум</span>
-      </div>
-      <div class="row mb8">
-        <input id="bet" type="number" value="10" min="1" class="inp">
-        <button onclick="sbet(Math.max(1,Math.floor(val('bet')/2)))" class="gh">1/2</button>
-        <button onclick="sbet(Math.floor(val('bet')*2))" class="gh">x2</button>
-      </div>
-      <div class="g4">
-        <button onclick="sbet(10)" class="gh">10</button>
-        <button onclick="sbet(50)" class="gh">50</button>
-        <button onclick="sbet(250)" class="gh">250</button>
-        <button onclick="sbet(1000)" class="gh">1000</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="t-cases" class="hid">
-    <div id="csb" class="card hid">
-      <div class="tag">ОТКРЫТИЕ КЕЙСА...</div>
-      <div class="cw"><div class="cl"></div><div id="ct" class="ct"></div></div>
-    </div>
-    <div id="cl"></div>
-  </div>
-
-  <div id="t-bonus" class="hid">
-    <div class="card">
-      <div class="row mb12">
-        <div><div class="ttl">Кэшбэк 10%</div><div class="sub">Возврат с проигранных ставок</div></div>
-        <div class="cbnum"><span id="cbv">0.00</span> RUB</div>
-      </div>
-      <button onclick="ccb()" class="btn acc">Перевести на баланс</button>
-    </div>
-    <div class="card">
-      <div class="ttl">Ежедневный бонус</div>
-      <div class="sub mb12">Бесплатные 150.00 RUB каждые 24 часа</div>
-      <button onclick="cdly()" class="btn gh">Забрать 150 RUB</button>
-    </div>
-    <div class="card">
-      <div class="ttl mb8">Промокод (START2026)</div>
-      <div class="row">
-        <input id="prm" type="text" placeholder="Введите код" class="inp up">
-        <button onclick="uprm()" class="acc okbtn">ОК</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="t-dep" class="hid">
-    <div class="card">
-      <div class="row mb12">
-        <div class="ttl">Пополнение баланса</div>
-        <span class="tag">От 50 RUB</span>
-      </div>
-      <div class="g3 mb12">
-        <button onclick="spay('sbp',this)" class="pm gh pact">СБП / Карты</button>
-        <button onclick="spay('cb',this)" class="pm gh">CryptoBot</button>
-        <button onclick="spay('ton',this)" class="pm gh">TON / USD</button>
-      </div>
-      <div class="row mb8 lbl">
-        <span>Сумма в рублях (мин. 50)</span>
-        <span id="pp" class="link">50.00 RUB</span>
-      </div>
-      <input id="ds" type="number" value="50" min="50" oninput="uprev()" class="inp mb8">
-      <div class="g5 mb12">
-        <button onclick="sdep(50)" class="gh">50</button>
-        <button onclick="sdep(100)" class="gh">100</button>
-        <button onclick="sdep(500)" class="gh">500</button>
-        <button onclick="sdep(1000)" class="gh">1000</button>
-        <button onclick="sdep(5000)" class="gh">5000</button>
-      </div>
-      <button onclick="minv()" class="btn acc">Перейти к оплате</button>
-    </div>
-
-    <div id="ib" class="card hid">
-      <div class="row invtop">
-        <span id="im" class="link">СБП / Карты</span>
-        <span id="it">50.00 RUB</span>
-      </div>
-      <div class="row reqbox">
-        <span id="ir" class="reqtxt">+7 (999) 842-19-30 (СБП)</span>
-        <span onclick="creq()" class="link">Копия</span>
-      </div>
-      <button onclick="cinv()" class="btn acc">Я оплатил — зачислить</button>
-    </div>
-  </div>
-
-  <div id="t-prof" class="hid">
-    <div class="card row">
-      <div>
-        <div id="pn" class="ttl">Игрок</div>
-        <div class="sub">Игр: <span id="sg">0</span> | Выиграно: <span id="sw" class="link">0</span> RUB</div>
-      </div>
-      <span class="vip">VIP</span>
-    </div>
-    <div class="card">
-      <div class="tag mb8">ТЕМА ОФОРМЛЕНИЯ</div>
-      <div class="g3">
-        <button onclick="sthm('cyber')" class="gh c-cyb">Cyber Neon</button>
-        <button onclick="sthm('gold')" class="gh c-gld">Royal Gold</button>
-        <button onclick="sthm('crimson')" class="gh c-crm">Crimson</button>
-      </div>
-    </div>
-    <button onclick="rall()" class="btn gh c-red">Сбросить прогресс</button>
-  </div>
-</div>
-
-<div class="nav">
-  <button onclick="tab('games')" data-n="games" class="nb act">Игры</button>
-  <button onclick="tab('cases')" data-n="cases" class="nb">Кейсы</button>
-  <button onclick="tab('bonus')" data-n="bonus" class="nb">Бонусы</button>
-  <button onclick="tab('prof')" data-n="prof" class="nb">Профиль</button>
-</div>
-
-<script src="app.js"></script>
-</body>
-</html>
+:root[data-theme="cyber"]{--bg:#090b14;--card:#13172b;--elev:#1c223f;--acc:#00f5d4;--txt:#ffffff;--mut:#8b95b5;--brd:#262f54}
+:root[data-theme="gold"]{--bg:#0d0b08;--card:#1a1712;--elev:#262119;--acc:#f5b727;--txt:#fffbeb;--mut:#a8a092;--brd:#383022}
+:root[data-theme="crimson"]{--bg:#12080c;--card:#1f0e15;--elev:#2e1520;--acc:#ff3b6b;--txt:#fff1f2;--mut:#d494a3;--brd:#471f30}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:84px;transition:.2s}
+.hdr{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--brd);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--acc);color:#090b14;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
+.brand{font-size:13px;font-weight:800}
+.uid{font-size:10px;color:var(--mut)}
+.pill{background:var(--card);border:1px solid var(--brd);padding:6px 12px;border-radius:10px;font-size:13px;font-weight:800}
+.cur{color:var(--mut);font-size:11px}
+.plus{width:34px;height:34px;border-radius:10px;border:none;background:var(--acc);color:#090b14;font-size:20px;font-weight:800;cursor:pointer}
+.wrap{max-width:480px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:15px;margin-bottom:12px}
+.ban{background:linear-gradient(135deg,var(--elev),var(--card))}
+.tag{font-size:10px;font-weight:800;color:var(--acc);letter-spacing:1px;text-transform:uppercase}
+.ttl{font-size:16px;font-weight:800;margin-top:3px}
+.sub{font-size:12px;color:var(--mut);margin-top:2px}
+.gtitle{font-size:13px;font-weight:800;color:var(--acc);text-transform:uppercase}
+.lbl{font-size:11px;color:var(--mut)}
+.link{color:var(--acc);font-weight:800;cursor:pointer;flex-shrink:0}
+.cbnum{font-size:16px;font-weight:800;color:var(--acc)}
+.mb8{margin-bottom:8px}
+.mb12{margin-bottom:12px}
+.up{text-transform:uppercase}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.gb{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;color:var(--txt);text-align:left;display:flex;flex-direction:column;justify-content:space-between;height:102px;cursor:pointer}
+.gb:active{transform:scale(.97);border-color:var(--acc)}
+.gic{width:38px;height:38px;border-radius:10px;background:var(--elev);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px}
+.gm{font-size:11px;font-weight:800;color:var(--acc);background:var(--elev);padding:3px 7px;border-radius:6px}
+.btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer}
+.acc{background:var(--acc);color:#090b14}
+.okbtn{padding:11px 18px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
+.gh{background:var(--elev);border:1px solid var(--brd);color:var(--txt);padding:10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
+.pact{border-color:var(--acc)!important;color:var(--acc)!important}
+.inp{width:100%;background:var(--elev);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;color:var(--txt);font-size:14px;font-weight:700;outline:none}
+.hid{display:none!important}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);border-top:1px solid var(--brd);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 0}
+.nb{background:none;border:none;color:var(--mut);font-size:12px;font-weight:800;cursor:pointer}
+.nb.act{color:var(--acc)}
+.tst{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:50;background:var(--elev);border:1px solid var(--acc);color:var(--acc);padding:8px 16px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap}
+.cw{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--brd);background:var(--elev);height:74px;display:flex;align-items:center;margin-top:8px}
+.cl{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#ff3b6b;z-index:10}
+.ct{display:flex;gap:8px;padding:0 12px;transition:transform 3s cubic-bezier(.12,.85,.2,1)}
+.ci{min-width:74px;height:52px;border-radius:10px;background:var(--card);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--acc)}
+.mc{height:44px;border-radius:10px;border:1px solid var(--brd);background:var(--elev);color:var(--txt);font-weight:800;font-size:14px;cursor:pointer}
+.mo{background:var(--acc);color:#090b14;border-color:var(--acc)}
+.mb{background:#dc2626;color:#fff;border-color:#dc2626}
+.sb{background:var(--elev);border-radius:14px;padding:18px;text-align:center;margin-bottom:12px}
+.bn{font-size:28px;font-weight:800;color:var(--acc)}
+.invtop{border-bottom:1px solid var(--brd);padding-bottom:8px;margin-bottom:10px;font-size:12px;font-weight:800}
+.reqbox{background:var(--elev);padding:10px;border-radius:10px;margin-bottom:10px;font-size:11px}
+.reqtxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vip{background:var(--elev);color:var(--acc);font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px}
+.c-cyb{color:#00f5d4}
+.c-gld{color:#f5b727}
+.c-crm{color:#ff3b6b}
+.c-red{color:#f87171}
+.btn-red{background:#dc2626;color:#fff}
+.btn-grn{background:#059669;color:#fff}
