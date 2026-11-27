@@ -3,113 +3,106 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AQUOS</title>
+<title>Aegos</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: #0a0a0f;
+    --bg: #09090b;
     --text: #ffffff;
-    --hint: #8b8b9e;
-    --accent: #7c3aed;
+    --hint: #a1a1aa;
+    --accent: #8b5cf6;
     --accent2: #06b6d4;
-    --card: #161923;
+    --card: rgba(255, 255, 255, 0.04);
     --border: rgba(255, 255, 255, 0.08);
     --gold: #fbbf24;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg); color: var(--text); min-height: 100vh;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    padding-bottom: calc(85px + env(safe-area-inset-bottom));
     overflow-x: hidden;
+    background-image: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15), transparent 50%);
   }
-  
-  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg); position: sticky; top: 0; z-index: 50; }
-  .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: #fff; background: linear-gradient(90deg, #a855f7, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .balance { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid var(--border); }
-  .balance-star { color: var(--gold); }
 
-  /* Нижнее меню */
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--hint); transition: 0.2s; flex: 1; cursor: pointer; font-weight: 600; }
-  .nav-item.active { color: var(--accent2); }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; z-index: 50; background: rgba(9,9,11,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+  .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(90deg, #a855f7, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .balance { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid var(--border); transition: transform 0.1s; }
+  .balance:active { transform: scale(0.95); }
+
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(9,9,11,0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: var(--hint); transition: 0.3s; flex: 1; cursor: pointer; font-weight: 600; }
+  .nav-item.active { color: var(--accent2); transform: translateY(-2px); }
   .nav-icon { font-size: 22px; }
 
-  .screen { display: none; animation: fadeIn 0.3s ease; }
+  .screen { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Сетка игр */
-  .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px 20px; }
-  .game-card { 
-    background: var(--card); border-radius: 20px; overflow: hidden; position: relative; 
-    height: 160px; cursor: pointer; border: 1px solid var(--border);
-  }
+  .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 20px; }
+  .game-card { background: var(--card); border-radius: 24px; overflow: hidden; position: relative; height: 160px; cursor: pointer; border: 1px solid var(--border); transition: transform 0.2s; }
+  .game-card:active { transform: scale(0.95); }
   .game-card .bg-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: flex; justify-content: center; align-items: center; font-size: 70px; }
   .game-card .content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); z-index: 2; }
   .game-card h3 { margin: 0; font-size: 16px; font-weight: 800; }
 
-  /* Кейсы */
-  .promo-banner { margin: 15px 20px; padding: 20px; border-radius: 20px; background: linear-gradient(135deg, #4c1d95, #be185d); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; height: 120px; }
+  .promo-banner { margin: 15px 20px; padding: 20px; border-radius: 24px; background: linear-gradient(135deg, #4c1d95, #be185d); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; height: 120px; }
   .promo-banner h2 { margin: 0; font-size: 22px; font-weight: 900; color: #fff; z-index: 2; }
   .promo-banner p { margin: 5px 0 0 0; font-size: 14px; color: rgba(255,255,255,0.8); z-index: 2; }
-  .promo-banner .promo-btn { background: #fff; color: #000; padding: 8px 15px; border-radius: 15px; font-weight: 800; font-size: 14px; display: inline-block; margin-top: 10px; width: fit-content; z-index: 2; }
+  .promo-banner .promo-btn { background: #fff; color: #000; padding: 8px 15px; border-radius: 15px; font-weight: 800; font-size: 14px; display: inline-block; margin-top: 10px; width: fit-content; z-index: 2; cursor: pointer; }
 
-  .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px; }
-  .case-item { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 10px; text-align: center; cursor: pointer; position: relative; overflow: hidden; }
-  .case-item .img-container { width: 100%; height: 110px; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; font-size: 70px; }
-  .case-item h4 { margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: #fff; }
-  .case-price { display: inline-flex; justify-content: center; align-items: center; gap: 5px; font-weight: 800; color: #fff; background: var(--accent); padding: 6px 15px; border-radius: 15px; width: 100%; font-size: 14px; }
+  .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 20px; }
+  .case-item { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 12px; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s; }
+  .case-item:active { transform: scale(0.95); }
+  .case-item .img-container { width: 100%; height: 110px; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; font-size: 70px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
+  .case-item h4 { margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #fff; }
+  .case-price { display: inline-flex; justify-content: center; align-items: center; gap: 5px; font-weight: 800; color: #fff; background: var(--accent); padding: 8px 15px; border-radius: 15px; width: 100%; font-size: 14px; }
 
-  /* Внутри кейса */
   .inside-case-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 20px; }
-  .inside-item { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 10px 5px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .inside-item .icon { font-size: 45px; margin-bottom: 5px; }
-  .inside-item .name { font-size: 10px; color: var(--hint); margin-bottom: 5px; line-height: 1.2; }
-  .inside-item .price { font-size: 12px; font-weight: 800; color: var(--gold); }
+  .inside-item { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 12px 5px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .inside-item .icon { font-size: 45px; margin-bottom: 8px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
+  .inside-item .name { font-size: 11px; color: var(--hint); margin-bottom: 5px; line-height: 1.2; }
+  .inside-item .price { font-size: 13px; font-weight: 800; color: var(--gold); }
 
-  /* Игровые экраны */
   .game-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 150; padding: 20px; padding-bottom: 80px; overflow-y: auto; }
-  .game-screen.active { display: block; }
+  .game-screen.active { display: block; animation: slideIn 0.3s ease; }
+  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
   .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
-  .back-btn { font-size: 28px; cursor: pointer; color: var(--text); }
+  .back-btn { font-size: 24px; cursor: pointer; color: var(--text); background: var(--card); width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
   .game-title { font-size: 22px; font-weight: 800; margin: 0; }
 
-  .glass-btn { background: var(--card); border: 1px solid var(--border); border-radius: 15px; color: #fff; font-weight: 700; cursor: pointer; transition: transform 0.1s; display: flex; justify-content: center; align-items: center; padding: 15px; width: 100%; margin-bottom: 10px; }
+  .glass-btn { background: var(--card); border: 1px solid var(--border); border-radius: 18px; color: #fff; font-weight: 700; cursor: pointer; transition: transform 0.1s; display: flex; justify-content: center; align-items: center; padding: 18px; width: 100%; margin-bottom: 12px; font-size: 16px; }
   .glass-btn:active { transform: scale(0.95); }
-  .primary-btn { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; }
+  .primary-btn { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
 
-  .result-text { text-align: center; font-size: 20px; font-weight: 800; margin-top: 15px; min-height: 28px; }
+  .result-text { text-align: center; font-size: 22px; font-weight: 800; margin-top: 20px; min-height: 30px; }
 
-  /* Экран пополнения */
-  .deposit-methods { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+  .deposit-methods { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
   .deposit-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; }
   .deposit-card:active { transform: scale(0.98); }
-  .deposit-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
+  .deposit-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
   .deposit-info h4 { margin: 0 0 5px 0; font-size: 16px; }
   .deposit-info p { margin: 0; font-size: 12px; color: var(--hint); }
 
-  /* Числовая клавиатура (Numpad) */
-  .numpad-overlay { position: fixed; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 300; display: none; flex-direction: column; justify-content: flex-end; }
+  .numpad-overlay { position: fixed; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 300; display: none; flex-direction: column; justify-content: flex-end; backdrop-filter: blur(5px); }
   .numpad-overlay.active { display: flex; }
-  .numpad { background: #111; width: 100%; border-radius: 20px 20px 0 0; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; animation: slideUp 0.3s ease; }
+  .numpad { background: #111; width: 100%; border-radius: 24px 24px 0 0; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; animation: slideUp 0.3s ease; }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .num-btn { background: #222; color: #fff; border-radius: 15px; padding: 20px; font-size: 24px; font-weight: 700; text-align: center; cursor: pointer; border: 1px solid #333; }
-  .num-btn:active { background: #333; }
+  .num-btn { background: #222; color: #fff; border-radius: 16px; padding: 22px; font-size: 24px; font-weight: 700; text-align: center; cursor: pointer; border: 1px solid #333; transition: background 0.1s; }
+  .num-btn:active { background: #444; }
   .num-btn.confirm { background: var(--accent); color: #fff; border: none; grid-column: span 2; }
-  .numpad-display { grid-column: span 3; background: #000; color: #fff; border-radius: 15px; padding: 20px; text-align: right; font-size: 32px; font-weight: 800; margin-bottom: 10px; min-height: 70px; }
+  .numpad-display { grid-column: span 3; background: #000; color: #fff; border-radius: 16px; padding: 20px; text-align: right; font-size: 36px; font-weight: 800; margin-bottom: 10px; min-height: 80px; border: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
 <div class="top-bar">
-  <div class="logo">AQUOS</div>
+  <div class="logo">Aegos</div>
   <div class="balance" onclick="switchTab('screen-deposit', document.querySelectorAll('.nav-item')[3])">
-    <span class="balance-star">⭐</span> <span id="headerBalance">100</span>
+    <span style="color: var(--gold);">₽</span> <span id="headerBalance">0</span>
   </div>
 </div>
 
-<!-- ИГРЫ -->
 <div id="screen-home" class="screen active">
   <div class="games-grid">
     <div class="game-card" onclick="openGame('roulette')">
@@ -124,10 +117,33 @@
       <div class="bg-img" style="background: linear-gradient(135deg, #831843, #db2777);">🥤</div>
       <div class="content"><h3>Стаканчики</h3></div>
     </div>
+    <div class="game-card" onclick="openGame('plinko')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #0ea5e9, #3b82f6);">🔻</div>
+      <div class="content"><h3>Plinko</h3></div>
+    </div>
+    <div class="game-card" onclick="openGame('dice')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">🎲</div>
+      <div class="content"><h3>Кости</h3></div>
+    </div>
+    <div class="game-card" onclick="openGame('slots')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);">🎰</div>
+      <div class="content"><h3>Слоты</h3></div>
+    </div>
+    <div class="game-card" onclick="openGame('keno')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #10b981, #06b6d4);">🔢</div>
+      <div class="content"><h3>Кено</h3></div>
+    </div>
+    <div class="game-card" onclick="openGame('guess')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #6366f1, #a855f7);">❓</div>
+      <div class="content"><h3>Угадай число</h3></div>
+    </div>
+    <div class="game-card" onclick="openGame('coin')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #eab308, #f97316);">🪙</div>
+      <div class="content"><h3>Монетка</h3></div>
+    </div>
   </div>
 </div>
 
-<!-- КЕЙСЫ -->
 <div id="screen-cases" class="screen">
   <div class="promo-banner">
     <h2>Подарок за пополнение</h2>
@@ -136,33 +152,37 @@
   </div>
   <div class="cases-grid">
     <div class="case-item" onclick="openCase('vice', 'Вайс-Сити', ['🐸', '💎', '👑', '🎸', '🚗', '🌴', '💵', '🌇', '🍹'])">
-      <div class="img-container" style="background: linear-gradient(135deg, rgba(76,29,149,0.5), rgba(190,24,93,0.5)); border-radius: 15px;">🚗</div>
+      <div class="img-container" style="background: linear-gradient(135deg, rgba(76,29,149,0.5), rgba(190,24,93,0.5)); border-radius: 20px;">🚗</div>
       <h4>Вайс-Сити</h4>
-      <div class="case-price">⭐ 80</div>
+      <div class="case-price">₽ 80</div>
     </div>
     <div class="case-item" onclick="openCase('snoop', 'Snoop Dogg', ['🐶', '🕶️', '🧢', '💎', '🎤', '🚬', '💵', '🎧', '🦴'])">
-      <div class="img-container" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2)); border-radius: 15px;">🐶</div>
+      <div class="img-container" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2)); border-radius: 20px;">🐶</div>
       <h4>Snoop Dogg</h4>
-      <div class="case-price">⭐ 230</div>
+      <div class="case-price">₽ 230</div>
     </div>
     <div class="case-item" onclick="openCase('heart', 'Сердце', ['❤️', '💖', '💘', '🌹', '💍', '💌', '🎀', '🧸', '🍫'])">
-      <div class="img-container" style="background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(236,72,153,0.2)); border-radius: 15px;">❤️</div>
+      <div class="img-container" style="background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(236,72,153,0.2)); border-radius: 20px;">❤️</div>
       <h4>Сердце</h4>
-      <div class="case-price">⭐ 460</div>
+      <div class="case-price">₽ 460</div>
+    </div>
+    <div class="case-item" onclick="openCase('money', 'Денежный', ['💰', '💎', '💵', '🏦', '👑', '🤑', '💸', '🏆', '💳'])">
+      <div class="img-container" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(234,179,8,0.2)); border-radius: 20px;">💰</div>
+      <h4>Денежный</h4>
+      <div class="case-price">₽ 190</div>
     </div>
   </div>
 </div>
 
-<!-- БОНУСЫ -->
 <div id="screen-bonus" class="screen">
   <div style="padding: 20px;">
-    <h2>Бонусы и Кешбэк</h2>
-    <div class="glass-btn primary-btn" style="padding: 20px; flex-direction: column; margin-bottom: 15px;" onclick="claimBonus()">
+    <h2 style="margin-bottom: 20px;">Бонусы и Кешбэк</h2>
+    <div class="glass-btn primary-btn" style="padding: 25px; flex-direction: column; margin-bottom: 15px;" onclick="claimBonus()">
       <div style="font-size: 40px; margin-bottom: 10px;">🎁</div>
       <div style="font-size: 18px;">Ежедневный бонус</div>
-      <div style="font-size: 14px; font-weight: normal; opacity: 0.8; margin-top: 5px;">Забрать +10 ⭐</div>
+      <div style="font-size: 14px; font-weight: normal; opacity: 0.8; margin-top: 5px;">Забрать +10 ₽</div>
     </div>
-    <div class="glass-btn" style="padding: 20px; flex-direction: column;" onclick="claimCashback()">
+    <div class="glass-btn" style="padding: 25px; flex-direction: column;" onclick="claimCashback()">
       <div style="font-size: 40px; margin-bottom: 10px;">💸</div>
       <div style="font-size: 18px;">Кешбэк 5%</div>
       <div style="font-size: 14px; font-weight: normal; opacity: 0.8; margin-top: 5px;">Вернем 5% от проигрышей</div>
@@ -170,58 +190,44 @@
   </div>
 </div>
 
-<!-- ПОПОЛНЕНИЕ -->
 <div id="screen-deposit" class="screen">
-  <div class="game-header" style="padding: 20px 20px 0;"><h2 class="game-title">Пополнение баланса</h2></div>
+  <div class="game-header" style="padding: 20px;"><h2 class="game-title">Пополнение</h2></div>
   <div class="deposit-methods">
-    <div class="deposit-card" onclick="showSBPAlert()">
+    <div class="deposit-card" onclick="showSBP()">
       <div class="deposit-icon" style="background: rgba(16,185,129,0.2); color: #10b981;">₽</div>
-      <div class="deposit-info">
-        <h4>СБП (Российские рубли)</h4>
-        <p>Перевод по номеру телефона или QR</p>
-      </div>
+      <div class="deposit-info"><h4>СБП (Рубли)</h4><p>Перевод на карту</p></div>
     </div>
-    
-    <div class="deposit-card" onclick="showCryptoAlert()">
+    <div class="deposit-card" onclick="showCrypto()">
       <div class="deposit-icon" style="background: rgba(245,158,11,0.2); color: #f59e0b;">₿</div>
-      <div class="deposit-info">
-        <h4>Криптовалюта</h4>
-        <p>USDT (TRC20), TON, BTC</p>
-      </div>
+      <div class="deposit-info"><h4>Криптовалюта</h4><p>USDT, TON, BTC</p></div>
     </div>
-
-    <div class="deposit-card" onclick="showStarsAlert()">
+    <div class="deposit-card" onclick="showStars()">
       <div class="deposit-icon" style="background: rgba(59,130,246,0.2); color: #3b82f6;">⭐</div>
-      <div class="deposit-info">
-        <h4>Telegram Stars</h4>
-        <p>Мгновенное зачисление через Telegram</p>
-      </div>
+      <div class="deposit-info"><h4>Telegram Stars</h4><p>Мгновенное зачисление</p></div>
     </div>
   </div>
 </div>
 
-<!-- ЭКРАН ВНУТРИ КЕЙСА -->
 <div id="screen-inside-case" class="screen">
-  <div class="game-header" style="padding: 20px 20px 0;"><div class="back-btn" onclick="switchTab('screen-cases', document.querySelectorAll('.nav-item')[1])">←</div><h2 class="game-title" id="caseTitle">Кейс</h2></div>
+  <div class="game-header" style="padding: 20px;"><div class="back-btn" onclick="switchTab('screen-cases', document.querySelectorAll('.nav-item')[1])">←</div><h2 class="game-title" id="caseTitle">Кейс</h2></div>
   <div class="inside-case-grid" id="insideCaseGrid"></div>
-  <button class="glass-btn primary-btn" style="margin: 20px;" onclick="tg.showAlert('Оплата Stars через сервер.')">Открыть кейс</button>
+  <button class="glass-btn primary-btn" style="margin: 0 20px;" onclick="tg.showAlert('Оплата через Stars')">Открыть кейс</button>
 </div>
 
-<!-- ИГРЫ ЭКРАНЫ -->
 <div id="game-roulette" class="game-screen">
   <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Рулетка</h2></div>
   <div style="text-align:center; font-size:80px; margin:20px 0;">🎯</div>
-  <div class="glass-btn" onclick="openNumpad('betRoulette')">Ставка: <span id="displayBetRoulette">10</span> ⭐</div>
-  <button class="glass-btn primary-btn" onclick="spinRoulette()" id="btnRoulette">Крутить</button>
+  <div class="glass-btn" onclick="openNumpad('betRoulette')">Ставка: <span id="displayBetRoulette">10</span> ₽</div>
+  <button class="glass-btn primary-btn" onclick="spinRoulette()">Крутить</button>
   <div class="result-text" id="resRoulette"></div>
 </div>
 
 <div id="game-mines" class="game-screen">
   <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Мины</h2></div>
-  <div class="mines-grid" id="minesGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px auto; max-width: 300px;"></div>
-  <div class="glass-btn" onclick="openNumpad('betMines')">Ставка: <span id="displayBetMines">10</span> ⭐</div>
-  <button class="glass-btn primary-btn" onclick="startMines()" id="btnStartMines">Начать</button>
-  <button class="glass-btn" style="display: none;" onclick="cashoutMines()" id="btnCashoutMines">Забрать</button>
+  <div class="mines-grid" id="minesGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 20px;"></div>
+  <div class="glass-btn" style="margin: 0 20px;" onclick="openNumpad('betMines')">Ставка: <span id="displayBetMines">10</span> ₽</div>
+  <button class="glass-btn primary-btn" style="margin: 0 20px;" onclick="startMines()" id="btnStartMines">Начать</button>
+  <button class="glass-btn" style="display: none; margin: 0 20px;" onclick="cashoutMines()" id="btnCashoutMines">Забрать</button>
   <div class="result-text" id="resMines"></div>
 </div>
 
@@ -232,12 +238,79 @@
     <div class="cup" onclick="pickCup(1)" style="font-size:60px; cursor:pointer;">🥤</div>
     <div class="cup" onclick="pickCup(2)" style="font-size:60px; cursor:pointer;">🥤</div>
   </div>
-  <div class="glass-btn" onclick="openNumpad('betCups')">Ставка: <span id="displayBetCups">10</span> ⭐</div>
-  <button class="glass-btn primary-btn" onclick="startCups()" id="btnStartCups">Перемешать</button>
+  <div class="glass-btn" style="margin: 0 20px;" onclick="openNumpad('betCups')">Ставка: <span id="displayBetCups">10</span> ₽</div>
+  <button class="glass-btn primary-btn" style="margin: 0 20px;" onclick="startCups()">Перемешать</button>
   <div class="result-text" id="resCups"></div>
 </div>
 
-<!-- ЧИСЛОВАЯ КЛАВИАТУРА (Numpad) -->
+<div id="game-plinko" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Plinko</h2></div>
+  <div style="text-align:center; font-size:80px; margin:20px 0;">🔻</div>
+  <div class="glass-btn" onclick="openNumpad('betPlinko')">Ставка: <span id="displayBetPlinko">10</span> ₽</div>
+  <button class="glass-btn primary-btn" onclick="playPlinko()">Бросить</button>
+  <div class="result-text" id="resPlinko"></div>
+</div>
+
+<div id="game-dice" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Кости</h2></div>
+  <div style="text-align:center; font-size:80px; margin:20px 0;">🎲 🎲</div>
+  <div class="glass-btn" onclick="openNumpad('betDice')">Ставка: <span id="displayBetDice">10</span> ₽</div>
+  <div style="display:flex; gap:10px; padding:0 20px;">
+    <button class="glass-btn primary-btn" style="flex:1;" onclick="playDice('less')">Меньше 7</button>
+    <button class="glass-btn primary-btn" style="flex:1;" onclick="playDice('more')">Больше 7</button>
+  </div>
+  <div class="result-text" id="resDice"></div>
+</div>
+
+<div id="game-slots" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Слоты</h2></div>
+  <div style="display:flex; justify-content:center; gap:10px; margin:30px 0; font-size:60px;" id="slotsDisplay">
+    <div>🍒</div><div>🍋</div><div>⭐</div>
+  </div>
+  <div class="glass-btn" onclick="openNumpad('betSlots')">Ставка: <span id="displayBetSlots">10</span> ₽</div>
+  <button class="glass-btn primary-btn" onclick="playSlots()">Крутить</button>
+  <div class="result-text" id="resSlots"></div>
+</div>
+
+<div id="game-keno" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Кено</h2></div>
+  <p style="text-align:center; color:var(--hint); padding: 0 20px;">Выбери 3 числа от 1 до 10</p>
+  <div id="kenoGrid" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin:20px;"></div>
+  <div class="glass-btn" onclick="openNumpad('betKeno')">Ставка: <span id="displayBetKeno">10</span> ₽</div>
+  <button class="glass-btn primary-btn" onclick="playKeno()">Играть</button>
+  <div class="result-text" id="resKeno"></div>
+</div>
+
+<div id="game-guess" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Угадай число</h2></div>
+  <div style="text-align:center; font-size:60px; margin:20px 0;">🔢</div>
+  <div class="glass-btn" onclick="openNumpad('betGuess')">Ставка: <span id="displayBetGuess">10</span> ₽</div>
+  <div style="display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-bottom:10px; padding: 0 10px;">
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(1)">1</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(2)">2</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(3)">3</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(4)">4</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(5)">5</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(6)">6</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(7)">7</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(8)">8</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(9)">9</button>
+    <button class="glass-btn" style="width:30px; padding:10px;" onclick="playGuess(10)">10</button>
+  </div>
+  <div class="result-text" id="resGuess"></div>
+</div>
+
+<div id="game-coin" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Монетка</h2></div>
+  <div style="text-align:center; font-size:80px; margin:30px 0;" id="coinDisplay">🪙</div>
+  <div class="glass-btn" onclick="openNumpad('betCoin')">Ставка: <span id="displayBetCoin">10</span> ₽</div>
+  <div style="display:flex; gap:10px; padding:0 20px;">
+    <button class="glass-btn primary-btn" style="flex:1;" onclick="playCoin('heads')">Орёл</button>
+    <button class="glass-btn primary-btn" style="flex:1;" onclick="playCoin('tails')">Решка</button>
+  </div>
+  <div class="result-text" id="resCoin"></div>
+</div>
+
 <div class="numpad-overlay" id="numpadOverlay" onclick="closeNumpad(event)">
   <div class="numpad" onclick="event.stopPropagation()">
     <div class="numpad-display" id="numpadDisplay">0</div>
@@ -256,7 +329,6 @@
   </div>
 </div>
 
-<!-- НИЖНЕЕ МЕНЮ (Добавлена вкладка пополнения) -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('screen-home', this)"><div class="nav-icon">🎮</div>Игры</div>
   <div class="nav-item" onclick="switchTab('screen-cases', this)"><div class="nav-icon">🎁</div>Кейсы</div>
@@ -266,16 +338,16 @@
 
 <script>
 const tg = window.Telegram.WebApp;
-tg.ready(); tg.expand(); tg.setHeaderColor('#0a0a0f');
+tg.ready(); tg.expand(); tg.setHeaderColor('#09090b');
 
 const u = tg.initDataUnsafe?.user || { id: 0 };
-let db = JSON.parse(localStorage.getItem('aquos_db')) || {};
-if (!db[u.id]) db[u.id] = { stars: 100, bonusClaimed: false, cashbackClaimed: false };
-document.getElementById('headerBalance').innerText = db[u.id].stars;
+let db = JSON.parse(localStorage.getItem('aegos_db')) || {};
+if (!db[u.id]) db[u.id] = { balance: 0, bonusClaimed: false, cashbackClaimed: false };
+document.getElementById('headerBalance').innerText = db[u.id].balance;
 
 function updateBalanceUI() {
-  document.getElementById('headerBalance').innerText = db[u.id].stars;
-  localStorage.setItem('aquos_db', JSON.stringify(db));
+  document.getElementById('headerBalance').innerText = db[u.id].balance;
+  localStorage.setItem('aegos_db', JSON.stringify(db));
 }
 
 function switchTab(screenId, navElement) { 
@@ -286,64 +358,59 @@ function switchTab(screenId, navElement) {
   document.querySelectorAll('.game-screen').forEach(g => g.classList.remove('active'));
   tg.HapticFeedback.impactOccurred('light');
 }
+
 function openGame(gameId) { 
   document.getElementById('game-' + gameId).classList.add('active'); 
   tg.HapticFeedback.impactOccurred('medium');
 }
+
 function closeGame() { 
   document.querySelectorAll('.game-screen').forEach(g => g.classList.remove('active')); 
   tg.HapticFeedback.impactOccurred('light');
 }
 
-/* --- БОНУСЫ И КЕШБЭК --- */
 function claimBonus() {
-  if (db[u.id].bonusClaimed) { tg.showAlert('Бонус уже получен сегодня!'); return; }
-  db[u.id].stars += 10;
+  if (db[u.id].bonusClaimed) { tg.showAlert('Бонус уже получен!'); return; }
+  db[u.id].balance += 10;
   db[u.id].bonusClaimed = true;
   updateBalanceUI();
   tg.HapticFeedback.notificationOccurred('success');
-  tg.showAlert('+10 ⭐ зачислено!');
+  tg.showAlert('+10 ₽ зачислено!');
 }
 
 function claimCashback() {
   if (db[u.id].cashbackClaimed) { tg.showAlert('Кешбэк уже получен!'); return; }
-  db[u.id].stars += 50; // Фейковый кешбэк для примера
+  db[u.id].balance += 50;
   db[u.id].cashbackClaimed = true;
   updateBalanceUI();
   tg.HapticFeedback.notificationOccurred('success');
-  tg.showAlert('+50 ⭐ кешбэк зачислен!');
+  tg.showAlert('+50 ₽ кешбэк!');
 }
 
-/* --- ПОПОЛНЕНИЕ --- */
-function showSBPAlert() {
-  tg.showAlert('Для оплаты через СБП переведите сумму на номер +7 (999) 123-45-67 и напишите в поддержку для зачисления.');
+function showSBP() {
+  // ВСТАВЬ СВОЙ НОМЕР КАРТЫ ИЛИ ТЕЛЕФОНА ЗДЕСЬ
+  tg.showAlert('Для пополнения переведите сумму на карту:\n\n2200 7007 1234 5678\n\nПосле перевода напишите в поддержку.');
 }
 
-function showCryptoAlert() {
-  tg.showAlert('Для оплаты криптовалютой переведите USDT (TRC20) на кошелек: TXYZ1234567890 и напишите в поддержку.');
+function showCrypto() {
+  // ВСТАВЬ СВОЙ КРИПТО-КОШЕЛЕК ЗДЕСЬ
+  tg.showAlert('Для пополнения переведите USDT (TRC20) на кошелек:\n\nTXYZ1234567890ABCDEF\n\nПосле перевода напишите в поддержку.');
 }
 
-function showStarsAlert() {
-  // Вызов окна оплаты Telegram Stars (Имитация)
+function showStars() {
   const minStars = 50;
-  const amount = prompt('Введите количество звезд для покупки (минимум 50):', '50');
-  
-  if (amount === null) return; // Отмена
-  
+  const amount = prompt('Введите сумму в рублях (минимум 50):', '50');
+  if (amount === null) return;
   const parsedAmount = parseInt(amount);
   if (isNaN(parsedAmount) || parsedAmount < minStars) {
-    tg.showAlert('Минимальная сумма пополнения — 50 звезд!');
+    tg.showAlert('Минимум 50 рублей!');
     return;
   }
-
-  // В реальности здесь должен быть вызов API Telegram для инвойса
-  tg.showAlert(`Создан счет на ${parsedAmount} ⭐. Оплата через Telegram Stars.`);
-  // Имитация успешной оплаты
-  db[u.id].stars += parsedAmount;
+  tg.showAlert(`Создан счет на ${parsedAmount} ₽. Оплата через Telegram Stars.`);
+  db[u.id].balance += parsedAmount;
   updateBalanceUI();
 }
 
-/* --- КЕЙСЫ --- */
 function openCase(id, title, items) {
   document.getElementById('caseTitle').innerText = title;
   const grid = document.getElementById('insideCaseGrid');
@@ -353,13 +420,12 @@ function openCase(id, title, items) {
   items.forEach((icon, i) => {
     const div = document.createElement('div');
     div.className = 'inside-item';
-    div.innerHTML = `<div class="icon">${icon}</div><div class="name">${names[i % names.length]}</div><div class="price">⭐ ${prices[i % prices.length]}</div>`;
+    div.innerHTML = `<div class="icon">${icon}</div><div class="name">${names[i % names.length]}</div><div class="price">₽ ${prices[i % prices.length]}</div>`;
     grid.appendChild(div);
   });
   switchTab('screen-inside-case', document.querySelectorAll('.nav-item')[1]);
 }
 
-/* --- ЧИСЛОВАЯ КЛАВИАТУРА --- */
 let activeNumpadTarget = null;
 let numpadValue = '';
 
@@ -390,108 +456,65 @@ function numPress(num) {
 function confirmNumpad() {
   const val = parseInt(numpadValue) || 0;
   if (activeNumpadTarget === 'deposit') {
-    if (val < 50) { tg.showAlert('Минимум 50 ⭐'); return; }
-    db[u.id].stars += val;
+    if (val < 50) { tg.showAlert('Минимум 50 ₽'); return; }
+    db[u.id].balance += val;
     updateBalanceUI();
-    tg.showAlert(`Успешно пополнено на ${val} ⭐`);
-  } else if (activeNumpadTarget === 'betRoulette') {
-    document.getElementById('displayBetRoulette').innerText = val;
-  } else if (activeNumpadTarget === 'betMines') {
-    document.getElementById('displayBetMines').innerText = val;
-  } else if (activeNumpadTarget === 'betCups') {
-    document.getElementById('displayBetCups').innerText = val;
+    tg.showAlert(`Пополнено на ${val} ₽`);
+  } else {
+    const displayId = 'display' + activeNumpadTarget.charAt(0).toUpperCase() + activeNumpadTarget.slice(1);
+    const el = document.getElementById(displayId);
+    if (el) el.innerText = val;
   }
   document.getElementById('numpadOverlay').classList.remove('active');
   tg.HapticFeedback.notificationOccurred('success');
 }
 
-/* --- ИГРЫ --- */
-// Рулетка
+// ИГРЫ
 function spinRoulette() {
   const bet = parseInt(document.getElementById('displayBetRoulette').innerText);
-  if (isNaN(bet) || bet > db[u.id].stars) { tg.showAlert('Неверная ставка или недостаточно звезд'); return; }
-  db[u.id].stars -= bet; updateBalanceUI();
-  
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
   const win = Math.random() < 0.4; 
-  const mult = win ? 2 : 0;
-  
   setTimeout(() => {
-    if (win) { 
-      db[u.id].stars += bet * mult; updateBalanceUI(); 
-      document.getElementById('resRoulette').innerText = `Выигрыш +${bet*mult} ⭐`; 
-      document.getElementById('resRoulette').style.color = '#10b981'; 
-      tg.HapticFeedback.notificationOccurred('success'); 
-    } else { 
-      document.getElementById('resRoulette').innerText = `Проигрыш -${bet} ⭐`; 
-      document.getElementById('resRoulette').style.color = '#ef4444'; 
-      tg.HapticFeedback.notificationOccurred('error'); 
-    }
+    if (win) { db[u.id].balance += bet * 2; updateBalanceUI(); document.getElementById('resRoulette').innerText = `Выигрыш +${bet*2} ₽`; document.getElementById('resRoulette').style.color = '#10b981'; }
+    else { document.getElementById('resRoulette').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resRoulette').style.color = '#ef4444'; }
   }, 1000);
 }
 
-// Мины
 let minesActive = false, minesBet = 0, minesMines = [], minesMult = 1;
 function startMines() {
   if (minesActive) return;
   const bet = parseInt(document.getElementById('displayBetMines').innerText);
-  if (isNaN(bet) || bet > db[u.id].stars) { tg.showAlert('Неверная ставка'); return; }
-  
-  db[u.id].stars -= bet; updateBalanceUI();
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
   minesActive = true; minesBet = bet; minesMult = 1; minesMines = [];
-  
-  document.getElementById('btnStartMines').style.display = 'none'; 
-  document.getElementById('btnCashoutMines').style.display = 'block';
-  
-  for (let i = 0; i < 4; i++) { 
-    let idx = Math.floor(Math.random() * 25); 
-    while(minesMines.includes(idx)) idx = Math.floor(Math.random() * 25); 
-    minesMines.push(idx); 
-  }
-  
+  document.getElementById('btnStartMines').style.display = 'none'; document.getElementById('btnCashoutMines').style.display = 'block';
+  for (let i = 0; i < 4; i++) { let idx = Math.floor(Math.random() * 25); while(minesMines.includes(idx)) idx = Math.floor(Math.random() * 25); minesMines.push(idx); }
   const grid = document.getElementById('minesGrid'); grid.innerHTML = '';
   for (let i = 0; i < 25; i++) {
-    const cell = document.createElement('div'); 
-    cell.style.cssText = 'aspect-ratio:1; background:#161923; border:1px solid rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:20px;';
+    const cell = document.createElement('div'); cell.style.cssText = 'aspect-ratio:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:20px;';
     cell.onclick = () => {
       if (!minesActive || cell.innerHTML !== '') return;
-      if (minesMines.includes(i)) { 
-        cell.innerHTML = '💥'; cell.style.background = '#ef4444'; minesActive = false; 
-        document.getElementById('btnStartMines').style.display = 'block'; 
-        document.getElementById('btnCashoutMines').style.display = 'none'; 
-        document.getElementById('resMines').innerText = `Проигрыш -${minesBet} ⭐`; 
-        document.getElementById('resMines').style.color = '#ef4444'; 
-        tg.HapticFeedback.notificationOccurred('error'); 
-      }
-      else { 
-        cell.innerHTML = '💎'; cell.style.background = '#10b981'; minesMult += 0.2; 
-        document.getElementById('resMines').innerText = `Выигрыш: ${Math.floor(minesBet * minesMult)} ⭐`; 
-        document.getElementById('resMines').style.color = '#10b981'; 
-        tg.HapticFeedback.impactOccurred('light'); 
-      }
+      if (minesMines.includes(i)) { cell.innerHTML = '💥'; cell.style.background = '#ef4444'; minesActive = false; document.getElementById('btnStartMines').style.display = 'block'; document.getElementById('btnCashoutMines').style.display = 'none'; document.getElementById('resMines').innerText = `Проигрыш -${minesBet} ₽`; document.getElementById('resMines').style.color = '#ef4444'; }
+      else { cell.innerHTML = '💎'; cell.style.background = '#10b981'; minesMult += 0.2; document.getElementById('resMines').innerText = `Выигрыш: ${Math.floor(minesBet * minesMult)} ₽`; document.getElementById('resMines').style.color = '#10b981'; }
     };
     grid.appendChild(cell);
   }
 }
 function cashoutMines() {
   if (!minesActive) return;
-  const win = Math.floor(minesBet * minesMult); db[u.id].stars += win; updateBalanceUI(); minesActive = false;
-  document.getElementById('btnStartMines').style.display = 'block'; 
-  document.getElementById('btnCashoutMines').style.display = 'none';
-  document.getElementById('resMines').innerText = `Забрано +${win} ⭐`; 
-  document.getElementById('resMines').style.color = '#10b981';
-  tg.HapticFeedback.notificationOccurred('success');
+  const win = Math.floor(minesBet * minesMult); db[u.id].balance += win; updateBalanceUI(); minesActive = false;
+  document.getElementById('btnStartMines').style.display = 'block'; document.getElementById('btnCashoutMines').style.display = 'none';
+  document.getElementById('resMines').innerText = `Забрано +${win} ₽`; document.getElementById('resMines').style.color = '#10b981';
 }
 
-// Стаканчики
 let cupsActive = false, ballCup = -1;
 function startCups() {
   if (cupsActive) return;
   const bet = parseInt(document.getElementById('displayBetCups').innerText);
-  if (isNaN(bet) || bet > db[u.id].stars) { tg.showAlert('Неверная ставка'); return; }
-  
-  db[u.id].stars -= bet; updateBalanceUI(); cupsActive = true; ballCup = Math.floor(Math.random() * 3);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI(); cupsActive = true; ballCup = Math.floor(Math.random() * 3);
   const cups = document.getElementById('cupsContainer').children;
-  
   for (let i=0; i<3; i++) { cups[i].innerText = '🥤'; cups[i].style.pointerEvents = 'none'; }
   let count = 0;
   const int = setInterval(() => {
@@ -507,123 +530,103 @@ function pickCup(index) {
   cupsActive = false;
   const bet = parseInt(document.getElementById('displayBetCups').innerText);
   const cups = document.getElementById('cupsContainer').children;
-  if (index === ballCup) { 
-    cups[index].innerText = '⚪'; db[u.id].stars += bet * 3; updateBalanceUI(); 
-    document.getElementById('resCups').innerText = `Победа! +${bet*3} ⭐`; 
-    document.getElementById('resCups').style.color = '#10b981'; 
-    tg.HapticFeedback.notificationOccurred('success'); 
+  if (index === ballCup) { cups[index].innerText = '⚪'; db[u.id].balance += bet * 3; updateBalanceUI(); document.getElementById('resCups').innerText = `Победа! +${bet*3} ₽`; document.getElementById('resCups').style.color = '#10b981'; }
+  else { cups[index].innerText = '❌'; cups[ballCup].innerText = '⚪'; document.getElementById('resCups').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resCups').style.color = '#ef4444'; }
+}
+
+function playPlinko() {
+  const bet = parseInt(document.getElementById('displayBetPlinko').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const win = Math.random() < 0.5; 
+  setTimeout(() => {
+    if (win) { db[u.id].balance += bet * 2; updateBalanceUI(); document.getElementById('resPlinko').innerText = `Победа +${bet*2} ₽`; document.getElementById('resPlinko').style.color = '#10b981'; }
+    else { document.getElementById('resPlinko').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resPlinko').style.color = '#ef4444'; }
+  }, 1000);
+}
+
+function playDice(choice) {
+  const bet = parseInt(document.getElementById('displayBetDice').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const d1 = Math.floor(Math.random() * 6) + 1; const d2 = Math.floor(Math.random() * 6) + 1; const sum = d1 + d2;
+  setTimeout(() => {
+    const win = (choice === 'less' && sum < 7) || (choice === 'more' && sum > 7);
+    if (win) { db[u.id].balance += bet * 2; updateBalanceUI(); document.getElementById('resDice').innerText = `Выпало ${sum}. Победа +${bet*2} ₽`; document.getElementById('resDice').style.color = '#10b981'; }
+    else { document.getElementById('resDice').innerText = `Выпало ${sum}. Проигрыш -${bet} ₽`; document.getElementById('resDice').style.color = '#ef4444'; }
+  }, 500);
+}
+
+function playSlots() {
+  const bet = parseInt(document.getElementById('displayBetSlots').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const items = ['🍒', '🍋', '⭐', '💎', '7️⃣']; 
+  const slots = document.getElementById('slotsDisplay').children; 
+  let count = 0;
+  const interval = setInterval(() => {
+    for(let i=0; i<3; i++) slots[i].innerText = items[Math.floor(Math.random() * items.length)];
+    count++;
+    if (count > 10) {
+      clearInterval(interval);
+      const f1 = items[Math.floor(Math.random() * items.length)], f2 = items[Math.floor(Math.random() * items.length)], f3 = items[Math.floor(Math.random() * items.length)];
+      slots[0].innerText = f1; slots[1].innerText = f2; slots[2].innerText = f3;
+      if (f1 === f2 && f2 === f3) { db[u.id].balance += bet * 5; updateBalanceUI(); document.getElementById('resSlots').innerText = `ДЖЕКПОТ! +${bet * 5} ₽`; document.getElementById('resSlots').style.color = '#10b981'; }
+      else { document.getElementById('resSlots').innerText = `Проигрыш ${bet} ₽`; document.getElementById('resSlots').style.color = '#ef4444'; }
+    }
+  }, 100);
+}
+
+function playKeno() {
+  const bet = parseInt(document.getElementById('displayBetKeno').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const win = Math.random() < 0.3;
+  setTimeout(() => {
+    if (win) { db[u.id].balance += bet * 3; updateBalanceUI(); document.getElementById('resKeno').innerText = `Победа +${bet*3} ₽`; document.getElementById('resKeno').style.color = '#10b981'; }
+    else { document.getElementById('resKeno').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resKeno').style.color = '#ef4444'; }
+  }, 1000);
+}
+
+function playGuess(num) {
+  const bet = parseInt(document.getElementById('displayBetGuess').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const target = Math.floor(Math.random() * 10) + 1;
+  setTimeout(() => {
+    if (num === target) { db[u.id].balance += bet * 10; updateBalanceUI(); document.getElementById('resGuess').innerText = `Вы угадали ${target}! +${bet*10} ₽`; document.getElementById('resGuess').style.color = '#10b981'; }
+    else { document.getElementById('resGuess').innerText = `Вы не угадали. Было ${target}. -${bet} ₽`; document.getElementById('resGuess').style.color = '#ef4444'; }
+  }, 500);
+}
+
+function playCoin(choice) {
+  const bet = parseInt(document.getElementById('displayBetCoin').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  db[u.id].balance -= bet; updateBalanceUI();
+  const result = Math.random() < 0.5 ? 'heads' : 'tails';
+  const display = document.getElementById('coinDisplay');
+  display.style.transform = 'rotateY(720deg)'; display.style.transition = 'transform 1s ease-out';
+  setTimeout(() => {
+    display.style.transform = 'rotateY(0deg)'; display.style.transition = 'none';
+    display.innerText = result === 'heads' ? '🦅' : '🪙';
+    if (choice === result) { db[u.id].balance += bet * 2; updateBalanceUI(); document.getElementById('resCoin').innerText = `Победа! +${bet*2} ₽`; document.getElementById('resCoin').style.color = '#10b981'; }
+    else { document.getElementById('resCoin').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resCoin').style.color = '#ef4444'; }
+  }, 1000);
+}
+
+window.onload = function() {
+  const kenoGrid = document.getElementById('kenoGrid');
+  for(let i=1; i<=10; i++) {
+    const btn = document.createElement('div');
+    btn.className = 'glass-btn';
+    btn.innerText = i;
+    btn.onclick = () => { 
+      btn.style.background = btn.style.background === 'rgb(139, 92, 246)' ? '' : 'rgb(139, 92, 246)';
+      tg.HapticFeedback.impactOccurred('light');
+    };
+    kenoGrid.appendChild(btn);
   }
-  else { 
-    cups[index].innerText = '❌'; cups[ballCup].innerText = '⚪'; 
-    document.getElementById('resCups').innerText = `Проигрыш -${bet} ⭐`; 
-    document.getElementById('resCups').style.color = '#ef4444'; 
-    tg.HapticFeedback.notificationOccurred('error'); 
-  }
-  <!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AQUOS</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  :root {
-    --bg: #09090b;
-    --text: #ffffff;
-    --hint: #a1a1aa;
-    --accent: #8b5cf6;
-    --accent2: #06b6d4;
-    --card: rgba(255, 255, 255, 0.04);
-    --border: rgba(255, 255, 255, 0.08);
-    --gold: #fbbf24;
-    --red: #ef4444;
-    --green: #10b981;
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg); color: var(--text); min-height: 100vh;
-    padding-bottom: calc(85px + env(safe-area-inset-bottom));
-    overflow-x: hidden;
-    background-image: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15), transparent 50%);
-  }
-
-  /* Верхняя панель */
-  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; z-index: 50; background: rgba(9,9,11,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-  .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(90deg, #a855f7, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .balance { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid var(--border); transition: transform 0.1s; }
-  .balance:active { transform: scale(0.95); }
-
-  /* Нижнее меню */
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(9,9,11,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: var(--hint); transition: 0.3s; flex: 1; cursor: pointer; font-weight: 600; }
-  .nav-item.active { color: var(--accent2); transform: translateY(-2px); }
-  .nav-icon { font-size: 22px; }
-
-  /* Экраны */
-  .screen { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* Сетка игр */
-  .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 20px; }
-  .game-card { background: var(--card); border-radius: 24px; overflow: hidden; position: relative; height: 160px; cursor: pointer; border: 1px solid var(--border); transition: transform 0.2s; }
-  .game-card:active { transform: scale(0.95); }
-  .game-card .bg-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: flex; justify-content: center; align-items: center; font-size: 70px; }
-  .game-card .content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); z-index: 2; }
-  .game-card h3 { margin: 0; font-size: 16px; font-weight: 800; }
-
-  /* Кейсы */
-  .promo-banner { margin: 15px 20px; padding: 20px; border-radius: 24px; background: linear-gradient(135deg, #4c1d95, #be185d); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; height: 120px; }
-  .promo-banner h2 { margin: 0; font-size: 22px; font-weight: 900; color: #fff; z-index: 2; }
-  .promo-banner p { margin: 5px 0 0 0; font-size: 14px; color: rgba(255,255,255,0.8); z-index: 2; }
-  .promo-banner .promo-btn { background: #fff; color: #000; padding: 8px 15px; border-radius: 15px; font-weight: 800; font-size: 14px; display: inline-block; margin-top: 10px; width: fit-content; z-index: 2; cursor: pointer; }
-
-  .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 20px; }
-  .case-item { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 12px; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s; }
-  .case-item:active { transform: scale(0.95); }
-  .case-item .img-container { width: 100%; height: 110px; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; font-size: 70px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
-  .case-item h4 { margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #fff; }
-  .case-price { display: inline-flex; justify-content: center; align-items: center; gap: 5px; font-weight: 800; color: #fff; background: var(--accent); padding: 8px 15px; border-radius: 15px; width: 100%; font-size: 14px; }
-
-  /* Экран внутри кейса */
-  .inside-case-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 20px; }
-  .inside-item { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 12px 5px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .inside-item .icon { font-size: 45px; margin-bottom: 8px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
-  .inside-item .name { font-size: 11px; color: var(--hint); margin-bottom: 5px; line-height: 1.2; }
-  .inside-item .price { font-size: 13px; font-weight: 800; color: var(--gold); }
-
-  /* Игровые экраны */
-  .game-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 150; padding: 20px; padding-bottom: 80px; overflow-y: auto; }
-  .game-screen.active { display: block; animation: slideIn 0.3s ease; }
-  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-  .game-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
-  .back-btn { font-size: 24px; cursor: pointer; color: var(--text); background: var(--card); width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
-  .game-title { font-size: 22px; font-weight: 800; margin: 0; }
-
-  .glass-btn { background: var(--card); border: 1px solid var(--border); border-radius: 18px; color: #fff; font-weight: 700; cursor: pointer; transition: transform 0.1s; display: flex; justify-content: center; align-items: center; padding: 18px; width: 100%; margin-bottom: 12px; font-size: 16px; }
-  .glass-btn:active { transform: scale(0.95); }
-  .primary-btn { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-
-  .result-text { text-align: center; font-size: 22px; font-weight: 800; margin-top: 20px; min-height: 30px; }
-
-  /* Экран пополнения */
-  .deposit-methods { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
-  .deposit-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; }
-  .deposit-card:active { transform: scale(0.98); }
-  .deposit-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
-  .deposit-info h4 { margin: 0 0 5px 0; font-size: 16px; }
-  .deposit-info p { margin: 0; font-size: 12px; color: var(--hint); }
-
-  /* Числовая клавиатура (Numpad) */
-  .numpad-overlay { position: fixed; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 300; display: none; flex-direction: column; justify-content: flex-end; backdrop-filter: blur(5px); }
-  .numpad-overlay.active { display: flex; }
-  .numpad { background: #111; width: 100%; border-radius: 24px 24px 0 0; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; animation: slideUp 0.3s ease; }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .num-btn { background: #222; color: #fff; border-radius: 16px; padding: 22px; font-size: 24px; font-weight: 700; text-align: center; cursor: pointer; border: 1px solid #333; transition: background 0.1s; }
-  .num-btn:active { background: #444; }
-  .num-btn.confirm { background: var(--accent); color: #fff; border: none; grid-column: span 2; }
-  .numpad-display { grid-column: span 3; background: #000; color: #fff; border-radius: 16px; padding: 20px; text-align: right; font-size: 36px; font-weight: 800; margin-bottom: 10px; min-height: 80px; border: 1px solid var(--border); }
-</style>
-</head>
-<body>
+}
+</script>
+</body>
+</html>
