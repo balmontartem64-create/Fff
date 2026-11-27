@@ -388,13 +388,11 @@ function claimCashback() {
 }
 
 function showSBP() {
-  // ВСТАВЬ СВОЙ НОМЕР КАРТЫ ИЛИ ТЕЛЕФОНА ЗДЕСЬ
-  tg.showAlert('Для пополнения переведите сумму на карту:\n\n2200 7007 1234 5678\n\nПосле перевода напишите в поддержку.');
+  tg.showAlert('Для пополнения переведите сумму на карту:\n\n2202 2080 1134 8472\n\nПосле перевода напишите в поддержку.');
 }
 
 function showCrypto() {
-  // ВСТАВЬ СВОЙ КРИПТО-КОШЕЛЕК ЗДЕСЬ
-  tg.showAlert('Для пополнения переведите USDT (TRC20) на кошелек:\n\nTXYZ1234567890ABCDEF\n\nПосле перевода напишите в поддержку.');
+  tg.showAlert('Для пополнения переведите USDT (TRC20) на кошелек:\n\nUQBEfxbcFtMiAEsf8VeJaZnadvkPgqIwdHYNGzEFmLVv1Tyh\n\nПосле перевода напишите в поддержку.');
 }
 
 function showStars() {
@@ -469,7 +467,6 @@ function confirmNumpad() {
   tg.HapticFeedback.notificationOccurred('success');
 }
 
-// ИГРЫ
 function spinRoulette() {
   const bet = parseInt(document.getElementById('displayBetRoulette').innerText);
   if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
