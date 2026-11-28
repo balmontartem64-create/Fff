@@ -30,6 +30,13 @@
   .balance { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid var(--border); transition: transform 0.1s; }
   .balance:active { transform: scale(0.95); }
 
+  /* Live лента */
+  .live-feed { background: rgba(0,0,0,0.3); padding: 8px 0; overflow: hidden; white-space: nowrap; border-bottom: 1px solid var(--border); }
+  .live-feed-inner { display: inline-block; animation: scrollText 20s linear infinite; font-size: 12px; color: var(--hint); }
+  .live-feed-inner span { margin-right: 20px; }
+  .live-feed-inner b { color: var(--gold); }
+  @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(9,9,11,0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: var(--hint); transition: 0.3s; flex: 1; cursor: pointer; font-weight: 600; }
   .nav-item.active { color: var(--accent2); transform: translateY(-2px); }
@@ -92,6 +99,12 @@
   .num-btn:active { background: #444; }
   .num-btn.confirm { background: var(--accent); color: #fff; border: none; grid-column: span 2; }
   .numpad-display { grid-column: span 3; background: #000; color: #fff; border-radius: 16px; padding: 20px; text-align: right; font-size: 36px; font-weight: 800; margin-bottom: 10px; min-height: 80px; border: 1px solid var(--border); }
+
+  /* Колесо фортуны */
+  .wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+  .wheel { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#ef4444 0deg 120deg, #10b981 120deg 240deg, #8b5cf6 240deg 360deg); border: 8px solid #222; box-shadow: 0 0 30px rgba(0,0,0,0.8); transition: transform 4s cubic-bezier(0.17, 0.67, 0.1, 1); position: relative; }
+  .wheel::after { content: ''; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; background: #111; border-radius: 50%; transform: translate(-50%, -50%); border: 4px solid #444; z-index: 2; }
+  .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #fff; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); }
 </style>
 </head>
 <body>
@@ -100,6 +113,15 @@
   <div class="logo">Aegos</div>
   <div class="balance" onclick="switchTab('screen-deposit', document.querySelectorAll('.nav-item')[3])">
     <span style="color: var(--gold);">₽</span> <span id="headerBalance">0</span>
+  </div>
+</div>
+
+<!-- LIVE ЛЕНТА -->
+<div class="live-feed">
+  <div class="live-feed-inner" id="liveFeed">
+    <span>Игрок @user123 выиграл <b>+500 ₽</b> в Рулетке</span>
+    <span>Игрок @alex777 выиграл <b>+1200 ₽</b> в Кейсах</span>
+    <span>Игрок @mike99 выиграл <b>+3000 ₽</b> в Минах</span>
   </div>
 </div>
 
@@ -129,16 +151,20 @@
       <div class="bg-img" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);">🎰</div>
       <div class="content"><h3>Слоты</h3></div>
     </div>
+    <div class="game-card" onclick="openGame('wheel')">
+      <div class="bg-img" style="background: linear-gradient(135deg, #10b981, #06b6d4);">🎡</div>
+      <div class="content"><h3>Колесо</h3></div>
+    </div>
     <div class="game-card" onclick="openGame('keno')">
-      <div class="bg-img" style="background: linear-gradient(135deg, #10b981, #06b6d4);">🔢</div>
+      <div class="bg-img" style="background: linear-gradient(135deg, #6366f1, #a855f7);">🔢</div>
       <div class="content"><h3>Кено</h3></div>
     </div>
     <div class="game-card" onclick="openGame('guess')">
-      <div class="bg-img" style="background: linear-gradient(135deg, #6366f1, #a855f7);">❓</div>
+      <div class="bg-img" style="background: linear-gradient(135deg, #eab308, #f97316);">❓</div>
       <div class="content"><h3>Угадай число</h3></div>
     </div>
     <div class="game-card" onclick="openGame('coin')">
-      <div class="bg-img" style="background: linear-gradient(135deg, #eab308, #f97316);">🪙</div>
+      <div class="bg-img" style="background: linear-gradient(135deg, #a855f7, #ec4899);">🪙</div>
       <div class="content"><h3>Монетка</h3></div>
     </div>
   </div>
@@ -151,22 +177,22 @@
     <div class="promo-btn" onclick="switchTab('screen-deposit', document.querySelectorAll('.nav-item')[3])">Пополнить</div>
   </div>
   <div class="cases-grid">
-    <div class="case-item" onclick="openCase('vice', 'Вайс-Сити', ['🐸', '💎', '👑', '🎸', '🚗', '🌴', '💵', '🌇', '🍹'])">
+    <div class="case-item" onclick="openCase('vice', 'Вайс-Сити', 80, ['🐸', '💎', '👑', '🎸', '🚗', '🌴', '💵', '🌇', '🍹'])">
       <div class="img-container" style="background: linear-gradient(135deg, rgba(76,29,149,0.5), rgba(190,24,93,0.5)); border-radius: 20px;">🚗</div>
       <h4>Вайс-Сити</h4>
       <div class="case-price">₽ 80</div>
     </div>
-    <div class="case-item" onclick="openCase('snoop', 'Snoop Dogg', ['🐶', '🕶️', '🧢', '💎', '🎤', '🚬', '💵', '🎧', '🦴'])">
+    <div class="case-item" onclick="openCase('snoop', 'Snoop Dogg', 230, ['🐶', '🕶️', '🧢', '💎', '🎤', '🚬', '💵', '🎧', '🦴'])">
       <div class="img-container" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2)); border-radius: 20px;">🐶</div>
       <h4>Snoop Dogg</h4>
       <div class="case-price">₽ 230</div>
     </div>
-    <div class="case-item" onclick="openCase('heart', 'Сердце', ['❤️', '💖', '💘', '🌹', '💍', '💌', '🎀', '🧸', '🍫'])">
+    <div class="case-item" onclick="openCase('heart', 'Сердце', 460, ['❤️', '💖', '💘', '🌹', '💍', '💌', '🎀', '🧸', '🍫'])">
       <div class="img-container" style="background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(236,72,153,0.2)); border-radius: 20px;">❤️</div>
       <h4>Сердце</h4>
       <div class="case-price">₽ 460</div>
     </div>
-    <div class="case-item" onclick="openCase('money', 'Денежный', ['💰', '💎', '💵', '🏦', '👑', '🤑', '💸', '🏆', '💳'])">
+    <div class="case-item" onclick="openCase('money', 'Денежный', 190, ['💰', '💎', '💵', '🏦', '👑', '🤑', '💸', '🏆', '💳'])">
       <div class="img-container" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(234,179,8,0.2)); border-radius: 20px;">💰</div>
       <h4>Денежный</h4>
       <div class="case-price">₽ 190</div>
@@ -182,10 +208,11 @@
       <div style="font-size: 18px;">Ежедневный бонус</div>
       <div style="font-size: 14px; font-weight: normal; opacity: 0.8; margin-top: 5px;">Забрать +10 ₽</div>
     </div>
-    <div class="glass-btn" style="padding: 25px; flex-direction: column;" onclick="claimCashback()">
-      <div style="font-size: 40px; margin-bottom: 10px;">💸</div>
-      <div style="font-size: 18px;">Кешбэк 5%</div>
-      <div style="font-size: 14px; font-weight: normal; opacity: 0.8; margin-top: 5px;">Вернем 5% от проигрышей</div>
+    
+    <div style="margin-top: 20px;">
+      <h3>Ввести промокод</h3>
+      <input type="text" id="promoInput" placeholder="Введите код" style="width: 100%; padding: 15px; border-radius: 15px; border: 1px solid var(--border); background: var(--card); color: #fff; margin-bottom: 10px; outline: none;">
+      <button class="glass-btn primary-btn" onclick="activatePromo()">Активировать</button>
     </div>
   </div>
 </div>
@@ -211,7 +238,7 @@
 <div id="screen-inside-case" class="screen">
   <div class="game-header" style="padding: 20px;"><div class="back-btn" onclick="switchTab('screen-cases', document.querySelectorAll('.nav-item')[1])">←</div><h2 class="game-title" id="caseTitle">Кейс</h2></div>
   <div class="inside-case-grid" id="insideCaseGrid"></div>
-  <button class="glass-btn primary-btn" style="margin: 0 20px;" onclick="tg.showAlert('Оплата через Stars')">Открыть кейс</button>
+  <button class="glass-btn primary-btn" style="margin: 0 20px;" id="openCaseBtn" onclick="startCaseOpening()">Открыть кейс</button>
 </div>
 
 <div id="game-roulette" class="game-screen">
@@ -270,6 +297,17 @@
   <div class="glass-btn" onclick="openNumpad('betSlots')">Ставка: <span id="displayBetSlots">10</span> ₽</div>
   <button class="glass-btn primary-btn" onclick="playSlots()">Крутить</button>
   <div class="result-text" id="resSlots"></div>
+</div>
+
+<div id="game-wheel" class="game-screen">
+  <div class="game-header"><div class="back-btn" onclick="closeGame()">←</div><h2 class="game-title">Колесо Фортуны</h2></div>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="fortuneWheel"></div>
+  </div>
+  <div class="glass-btn" onclick="openNumpad('betWheel')">Ставка: <span id="displayBetWheel">10</span> ₽</div>
+  <button class="glass-btn primary-btn" onclick="spinWheel()">Крутить</button>
+  <div class="result-text" id="resWheel"></div>
 </div>
 
 <div id="game-keno" class="game-screen">
@@ -342,7 +380,7 @@ tg.ready(); tg.expand(); tg.setHeaderColor('#09090b');
 
 const u = tg.initDataUnsafe?.user || { id: 0 };
 let db = JSON.parse(localStorage.getItem('aegos_db')) || {};
-if (!db[u.id]) db[u.id] = { balance: 0, bonusClaimed: false, cashbackClaimed: false };
+if (!db[u.id]) db[u.id] = { balance: 0, bonusClaimed: false, cashbackClaimed: false, promoCodes: [] };
 document.getElementById('headerBalance').innerText = db[u.id].balance;
 
 function updateBalanceUI() {
@@ -369,6 +407,7 @@ function closeGame() {
   tg.HapticFeedback.impactOccurred('light');
 }
 
+// БОНУСЫ
 function claimBonus() {
   if (db[u.id].bonusClaimed) { tg.showAlert('Бонус уже получен!'); return; }
   db[u.id].balance += 10;
@@ -378,15 +417,30 @@ function claimBonus() {
   tg.showAlert('+10 ₽ зачислено!');
 }
 
-function claimCashback() {
-  if (db[u.id].cashbackClaimed) { tg.showAlert('Кешбэк уже получен!'); return; }
-  db[u.id].balance += 50;
-  db[u.id].cashbackClaimed = true;
-  updateBalanceUI();
-  tg.HapticFeedback.notificationOccurred('success');
-  tg.showAlert('+50 ₽ кешбэк!');
+// ПРОМОКОДЫ
+function activatePromo() {
+  const code = document.getElementById('promoInput').value.trim().toUpperCase();
+  if (!code) return;
+  
+  if (code === 'AEGOS100') {
+    if (db[u.id].promoCodes.includes(code)) { tg.showAlert('Вы уже использовали этот код!'); return; }
+    db[u.id].balance += 100;
+    db[u.id].promoCodes.push(code);
+    updateBalanceUI();
+    tg.showAlert('Промокод активирован! +100 ₽');
+  } else if (code === 'START50') {
+    if (db[u.id].promoCodes.includes(code)) { tg.showAlert('Вы уже использовали этот код!'); return; }
+    db[u.id].balance += 50;
+    db[u.id].promoCodes.push(code);
+    updateBalanceUI();
+    tg.showAlert('Промокод активирован! +50 ₽');
+  } else {
+    tg.showAlert('Неверный промокод!');
+  }
+  document.getElementById('promoInput').value = '';
 }
 
+// ПОПОЛНЕНИЕ
 function showSBP() {
   tg.showAlert('Для пополнения переведите сумму на карту:\n\n2202 2080 1134 8472\n\nПосле перевода напишите в поддержку.');
 }
@@ -409,64 +463,118 @@ function showStars() {
   updateBalanceUI();
 }
 
-function openCase(id, title, items) {
+// КЕЙСЫ
+let currentCasePrice = 0;
+let currentCaseItems = [];
+
+function openCase(id, title, price, items) {
   document.getElementById('caseTitle').innerText = title;
+  currentCasePrice = price;
+  currentCaseItems = items;
+  
   const grid = document.getElementById('insideCaseGrid');
   grid.innerHTML = '';
   const names = ['Snoop Dogg', 'Heart', 'Bear', 'Cake', 'Diamond', 'Champagne', 'Ring', 'Rose'];
+  
+  // Генерируем цены для предметов внутри кейса (визуально)
   const prices = [5000, 1200, 800, 500, 1500, 300, 2500, 100];
+  
   items.forEach((icon, i) => {
     const div = document.createElement('div');
     div.className = 'inside-item';
     div.innerHTML = `<div class="icon">${icon}</div><div class="name">${names[i % names.length]}</div><div class="price">₽ ${prices[i % prices.length]}</div>`;
     grid.appendChild(div);
   });
+  
   switchTab('screen-inside-case', document.querySelectorAll('.nav-item')[1]);
 }
 
-let activeNumpadTarget = null;
-let numpadValue = '';
-
-function openNumpad(targetId) {
-  activeNumpadTarget = targetId;
-  numpadValue = '';
-  document.getElementById('numpadDisplay').innerText = '0';
-  document.getElementById('numpadOverlay').classList.add('active');
-  tg.HapticFeedback.impactOccurred('light');
-}
-
-function closeNumpad(e) {
-  if (e.target.id === 'numpadOverlay') {
-    document.getElementById('numpadOverlay').classList.remove('active');
-  }
-}
-
-function numPress(num) {
-  if (num === 'del') {
-    numpadValue = numpadValue.slice(0, -1);
+function startCaseOpening() {
+  if (db[u.id].balance < currentCasePrice) { tg.showAlert('Недостаточно средств! Пополните баланс.'); return; }
+  
+  db[u.id].balance -= currentCasePrice; updateBalanceUI();
+  
+  // Шансы: маленькая цена - больший шанс выпадения дешевого предмета.
+  // Дорогая цена - больше шанс на дорогой.
+  // Простая логика для примера:
+  const roll = Math.random();
+  let dropText = '';
+  
+  if (currentCasePrice <= 100) {
+    if (roll < 0.7) { // 70% шанс на хлам
+      const win = Math.floor(currentCasePrice * 0.5); // вернем только 50%
+      db[u.id].balance += win;
+      dropText = `Выпал обычный предмет. Возврат: ${win} ₽`;
+    } else {
+      const win = currentCasePrice * 2;
+      db[u.id].balance += win;
+      dropText = `Выпал редкий предмет! Выигрыш: ${win} ₽`;
+    }
   } else {
-    if (numpadValue.length < 5) numpadValue += num;
+    if (roll < 0.8) { // 80% шанс на мелкий
+      const win = Math.floor(currentCasePrice * 0.3);
+      db[u.id].balance += win;
+      dropText = `Выпал обычный предмет. Возврат: ${win} ₽`;
+    } else {
+      const win = currentCasePrice * 5;
+      db[u.id].balance += win;
+      dropText = `ДЖЕКПОТ! Выигрыш: ${win} ₽`;
+    }
   }
-  document.getElementById('numpadDisplay').innerText = numpadValue || '0';
-  tg.HapticFeedback.impactOccurred('light');
+  
+  updateBalanceUI();
+  tg.showAlert(dropText);
 }
 
-function confirmNumpad() {
-  const val = parseInt(numpadValue) || 0;
-  if (activeNumpadTarget === 'deposit') {
-    if (val < 50) { tg.showAlert('Минимум 50 ₽'); return; }
-    db[u.id].balance += val;
-    updateBalanceUI();
-    tg.showAlert(`Пополнено на ${val} ₽`);
-  } else {
-    const displayId = 'display' + activeNumpadTarget.charAt(0).toUpperCase() + activeNumpadTarget.slice(1);
-    const el = document.getElementById(displayId);
-    if (el) el.innerText = val;
-  }
-  document.getElementById('numpadOverlay').classList.remove('active');
-  tg.HapticFeedback.notificationOccurred('success');
+// КОЛЕСО ФОРТУНЫ
+let wheelSpinning = false;
+function spinWheel() {
+  if (wheelSpinning) return;
+  const bet = parseInt(document.getElementById('displayBetWheel').innerText);
+  if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
+  
+  db[u.id].balance -= bet; updateBalanceUI();
+  wheelSpinning = true;
+  
+  const wheel = document.getElementById('fortuneWheel');
+  const randomDeg = Math.floor(Math.random() * 360);
+  const totalRotation = 1440 + randomDeg; // 4 полных оборота + случайный угол
+  
+  wheel.style.transform = `rotate(${totalRotation}deg)`;
+  
+  setTimeout(() => {
+    wheelSpinning = false;
+    // Сектора: 0-120 (x5), 120-240 (x2), 240-360 (x30)
+    // Но так как колесо повернулось на randomDeg, нужно вычислить, куда попал указатель.
+    // Указатель сверху (0 градусов). Если колесо повернулось на 90 градусов, указатель указывает на 270 градусов колеса.
+    
+    const normalizedDeg = (360 - (randomDeg % 360)) % 360;
+    let mult = 0;
+    
+    if (normalizedDeg >= 0 && normalizedDeg < 120) mult = 5;
+    else if (normalizedDeg >= 120 && normalizedDeg < 240) mult = 2;
+    else mult = 30;
+    
+    // Ограничим максимальный выигрыш, чтобы не разорить
+    if (mult === 30 && bet > 50) mult = 10; // Если ставка большая, x30 не даем
+    
+    const win = bet * mult;
+    db[u.id].balance += win; updateBalanceUI();
+    
+    document.getElementById('resWheel').innerText = `Выигрыш x${mult}! +${win} ₽`;
+    document.getElementById('resWheel').style.color = mult > 2 ? '#10b981' : '#fbbf24';
+    
+    // Сброс колеса
+    setTimeout(() => {
+      wheel.style.transition = 'none';
+      wheel.style.transform = `rotate(0deg)`;
+      setTimeout(() => { wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.1, 1)'; }, 50);
+    }, 4000);
+    
+  }, 4200);
 }
 
+// ИГРЫ
 function spinRoulette() {
   const bet = parseInt(document.getElementById('displayBetRoulette').innerText);
   if (isNaN(bet) || bet > db[u.id].balance) { tg.showAlert('Неверная ставка'); return; }
@@ -609,6 +717,50 @@ function playCoin(choice) {
     if (choice === result) { db[u.id].balance += bet * 2; updateBalanceUI(); document.getElementById('resCoin').innerText = `Победа! +${bet*2} ₽`; document.getElementById('resCoin').style.color = '#10b981'; }
     else { document.getElementById('resCoin').innerText = `Проигрыш -${bet} ₽`; document.getElementById('resCoin').style.color = '#ef4444'; }
   }, 1000);
+}
+
+// Numpad
+let activeNumpadTarget = null;
+let numpadValue = '';
+
+function openNumpad(targetId) {
+  activeNumpadTarget = targetId;
+  numpadValue = '';
+  document.getElementById('numpadDisplay').innerText = '0';
+  document.getElementById('numpadOverlay').classList.add('active');
+  tg.HapticFeedback.impactOccurred('light');
+}
+
+function closeNumpad(e) {
+  if (e.target.id === 'numpadOverlay') {
+    document.getElementById('numpadOverlay').classList.remove('active');
+  }
+}
+
+function numPress(num) {
+  if (num === 'del') {
+    numpadValue = numpadValue.slice(0, -1);
+  } else {
+    if (numpadValue.length < 5) numpadValue += num;
+  }
+  document.getElementById('numpadDisplay').innerText = numpadValue || '0';
+  tg.HapticFeedback.impactOccurred('light');
+}
+
+function confirmNumpad() {
+  const val = parseInt(numpadValue) || 0;
+  if (activeNumpadTarget === 'deposit') {
+    if (val < 50) { tg.showAlert('Минимум 50 ₽'); return; }
+    db[u.id].balance += val;
+    updateBalanceUI();
+    tg.showAlert(`Пополнено на ${val} ₽`);
+  } else {
+    const displayId = 'display' + activeNumpadTarget.charAt(0).toUpperCase() + activeNumpadTarget.slice(1);
+    const el = document.getElementById(displayId);
+    if (el) el.innerText = val;
+  }
+  document.getElementById('numpadOverlay').classList.remove('active');
+  tg.HapticFeedback.notificationOccurred('success');
 }
 
 window.onload = function() {
